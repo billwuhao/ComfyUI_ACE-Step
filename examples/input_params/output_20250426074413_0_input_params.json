@@ -1,0 +1,25 @@
+{
+    "prompt": "Cuban music, salsa, son, Afro-Cuban, traditional Cuban",
+    "lyrics": "[verse]\nSun dips low the night ignites\nBassline hums with gleaming lights\nElectric guitar singing tales so fine\nIn the rhythm we all intertwine\n\n[verse]\nDrums beat steady calling out\nPercussion guides no room for doubt\nElectric pulse through every vein\nDance away every ounce of pain\n\n[chorus]\nFeel the rhythm feel the flow\nLet the music take control\nBassline deep electric hum\nIn this night we're never numb\n\n[bridge]\nStars above they start to glow\nEchoes of the night's soft glow\nElectric strings weave through the air\nIn this moment none compare\n\n[verse]\nHeartbeats sync with every tone\nLost in music never alone\nElectric tales of love and peace\nIn this groove we find release\n\n[chorus]\nFeel the rhythm feel the flow\nLet the music take control\nBassline deep electric hum\nIn this night we're never numb",
+    "audio_duration": 208.27997916666666,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": true,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.026132583618164062,
+        "diffusion": 15.139378070831299,
+        "latent2audio": 2.2071540355682373
+    },
+    "actual_seeds": [
+        3358899399
+    ]
+}

@@ -1,0 +1,8 @@
+diffusers
+librosa
+pypinyin
+pytorch_lightning
+soundfile
+hangul-romanize
+num2words
+spacy

@@ -1,0 +1,25 @@
+{
+    "prompt": "rock, hip - hop, orchestral, bass, drums, electric guitar, piano, synthesizer, violin, viola, cello, fast, energetic, motivational, inspirational, empowering",
+    "lyrics": "### **[Intro – Spoken]**  \n*\"The streets whisper, their echoes never fade.  \nEvery step I take leaves a mark—this ain't just a game.\"*  \n\n### **[Hook/Chorus]**  \nBorn in the chaos, I weather the storm,  \nRising from ashes where warriors are born.  \nChains couldn't hold me, the system’s a maze,  \nI rewrite the rules, set the city ablaze!  \n\n### **[Verse 1]**  \nCold nights, empty pockets, dreams laced with fight,  \nEvery loss made me sharper, cut deep like a knife.  \nThey said I wouldn’t make it, now they watch in despair,  \nFrom the curb to the throne, took the pain, made it rare.  \nEvery siren’s a melody, every alley holds a tale,  \nRose from the shadows, left my name on the trail.  \nStreetlights flicker like warnings in the haze,  \nBut I move like a phantom, unfazed by the blaze.  \n\n### **[Hook/Chorus]**  \nBorn in the chaos, I weather the storm,  \nRising from ashes where warriors are born.  \nChains couldn't hold me, the system’s a maze,  \nI rewrite the rules, set the city ablaze!  \n\n### **[Verse 2]**  \nBarbed wire fences couldn't lock in my mind,  \nEvery cage they designed, I left broken behind.  \nThey want control, but I’m destined to roam,  \nWhere the lost find their voice, where the heart sets the tone.  \nSteel and concrete, where the lessons run deep,  \nEvery crack in the pavement tells a story of heat.  \nBut I rise, undefeated, like a king with no throne,  \nWriting scripts in the struggle, my legacy’s stone.  \n\n### **[Bridge]**  \nFeel the rhythm of the underground roar,  \nEvery wound tells a story of the battles before.  \nBlood, sweat, and echoes fill the cold midnight,  \nBut we move with the fire—unshaken, upright.  \n\n### **[Verse 3]**  \nNo regrets, no retreat, this game has no pause,  \nEvery step that I take is a win for the lost.  \nI took lessons from hustlers, wisdom from pain,  \nNow the echoes of struggle carve power in my name.  \nThey built walls, but I walk through the cracks,  \nTurned dirt into gold, never looked back.  \nThrough the struggle we rise, through the fire we claim,  \nThis is more than just music—it's life in the frame.  \n\n### **[Hook/Chorus – Reprise]**  \nBorn in the chaos, I weather the storm,  \nRising from ashes where warriors are born.  \nChains couldn't hold me, the system’s a maze,  \nI rewrite the rules, set the city ablaze!  \n\n### **[Outro – Spoken]**  \n*\"The scars, the struggle, the grind—it’s all part of the rhythm.  \nWe never break, we never fold. We rise.\"*",
+    "audio_duration": 153.95997916666667,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": true,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.04368758201599121,
+        "diffusion": 17.16369390487671,
+        "latent2audio": 1.5405471324920654
+    },
+    "actual_seeds": [
+        2659225017
+    ]
+}

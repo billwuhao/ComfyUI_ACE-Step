@@ -1,0 +1,25 @@
+{
+    "prompt": "tango finlandés, campanas, disco, dark pop, electro, guitarra clásica, corridos tumba",
+    "lyrics": "[inst]",
+    "audio_duration": 162.79997916666667,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": true,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.011058568954467773,
+        "diffusion": 9.924944400787354,
+        "latent2audio": 1.6034839153289795
+    },
+    "actual_seeds": [
+        780297686
+    ]
+}

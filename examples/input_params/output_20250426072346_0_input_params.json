@@ -1,0 +1,25 @@
+{
+    "prompt": "hip-house, funk",
+    "lyrics": "[verse]\n哎呀跳起来，脚尖踩节拍 (oo-yeah!)\n灯光闪烁像星星盛开 (uh-huh!)\n人人都醒来，把烦恼踹开 (get it!)\n热血沸腾，汗水自己安排\n\n[chorus]\n嘿，你还等啥？快抓住节拍 (come on!)\n光芒指引，让心都不存在 (whoa!)\n点燃热火，我们一起飙high (let’s go!)\n跳入午夜的狂欢时代\n\n[bridge]\n咚咚鼓声啊，让你的灵魂起飞 (woo!)\n手心拍一拍，能量翻倍 (ah-hah!)\n键盘响起来，如宇宙的交汇 (oh yeah!)\n就是这感觉，兄弟姐妹都陶醉\n\n[verse]\n灵魂从不睡，只想继续燃烧 (woo!)\n节奏像热浪，席卷这街道 (ow!)\n大伙儿涌上楼台，满面微笑 (yeah!)\n这一刻属于我们，无可替代\n\n[chorus]\n嘿，你还等啥？快抓住节拍 (come on!)\n光芒指引，让心都不存在 (whoa!)\n点燃热火，我们一起飙high (let’s go!)\n跳入午夜的狂欢时代\n\n[verse]\n世界多精彩，握紧把它打开 (alright!)\n每一步都像星球在摇摆 (uh-huh!)\n无边无际的律动像大海 (oo-yeah!)\n跟着光芒之舞，一起澎湃",
+    "audio_duration": 204.19997916666668,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": true,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.05196118354797363,
+        "diffusion": 15.530808210372925,
+        "latent2audio": 2.5604095458984375
+    },
+    "actual_seeds": [
+        401640
+    ]
+}

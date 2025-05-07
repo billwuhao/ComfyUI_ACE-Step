@@ -1,0 +1,25 @@
+{
+    "prompt": "alternative rock, pop, rock",
+    "lyrics": "[verse]\nBright lights flashing in the city sky\nRunning fast and we don't know why\nElectric nights got our hearts on fire\nChasing dreams we'll never tire\n\n[verse]\nGrit in our eyes wind in our hair\nBreaking rules we don't even care\nShouting loud above the crowd\nLiving life like we're unbowed\n\n[chorus]\nRunning wild in the night so free\nFeel the beat pumping endlessly\nHearts collide in the midnight air\nWe belong we don't have a care\n\n[verse]\nPiercing through like a lightning strike\nEvery moment feels like a hike\nDaring bold never backing down\nKings and queens without a crown\n\n[chorus]\nRunning wild in the night so free\nFeel the beat pumping endlessly\nHearts collide in the midnight air\nWe belong we don't have a care\n\n[bridge]\nClose your eyes let your spirit soar\nWe are the ones who wanted more\nBreaking chains of the mundane\nIn this world we'll make our claim",
+    "audio_duration": 202.19997916666668,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": true,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.02512216567993164,
+        "diffusion": 18.860822677612305,
+        "latent2audio": 2.0361969470977783
+    },
+    "actual_seeds": [
+        1255121549
+    ]
+}

@@ -1,0 +1,25 @@
+{
+    "prompt": "electronic, house, electro house, synthesizer, drums, bass, percussion, fast, energetic, uplifting, exciting",
+    "lyrics": "[verse]\n霓虹灯下我们追逐\n人群跃动像潮水满布\n热浪袭来吹散孤独\n跳进节奏不如停下脚步\n\n[pre-chorus]\n脚尖触电快点感受\n迎着风声释放自由\n心跳节拍配合节奏\n一切烦恼请靠边游\n\n[chorus]\n夏夜狂奔没有尽头\n星光闪烁舞池不朽\n尽情挥洒所有节奏\n无边热情把你包裹哦\n\n[verse]\n天空翻滚黑云入夜\n每颗星星像音乐律贴\n耳边回响那低音线\n环绕耳际如梦境般甜\n\n[pre-chorus]\n脚尖触电快点感受\n迎着风声释放自由\n心跳节拍配合节奏\n一切烦恼请靠边游\n\n[chorus]\n夏夜狂奔没有尽头\n星光闪烁舞池不朽\n尽情挥洒所有节奏\n无边热情把你包裹哦",
+    "audio_duration": 221.47997916666668,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": true,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.028400182723999023,
+        "diffusion": 13.195815324783325,
+        "latent2audio": 2.1679723262786865
+    },
+    "actual_seeds": [
+        3440445703
+    ]
+}

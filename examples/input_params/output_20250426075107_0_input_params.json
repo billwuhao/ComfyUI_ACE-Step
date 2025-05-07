@@ -1,0 +1,25 @@
+{
+    "prompt": "pop, piano, rap, dark, atmospheric",
+    "lyrics": "[verse]\n月光爬上窗 染白冷的床\n心跳的方向 带我入迷惘\n黑夜吞噬光 命运的纸张\n爱是血色霜 邪恶又芬芳\n\n[chorus]\n你是猎人的欲望 我是迷途的小羊\n深陷你眼眸的荒 唐突献出心脏\n我在夜里回荡 是谁给我希望\n黑暗风中飘荡 假装不再受伤\n\n[verse]\n心锁在门外 谁会解开关怀\n温柔的手拍 藏着冷酷杀害\n思绪如尘埃 撞击爱的霹雳\n灵魂的独白 为你沾满血迹\n\n[bridge]\n你是噩梦的歌唱 是灵魂的捆绑\n绝望中带着光 悬崖边的渴望\n心跳被你鼓掌 恶魔也痴痴想\n渐渐没了抵抗 古老诡计流淌\n\n[chorus]\n你是猎人的欲望 我是迷途的小羊\n深陷你眼眸的荒 唐突献出心脏\n我在夜里回荡 是谁给我希望\n黑暗风中飘荡 假装不再受伤\n\n[outro]\n爱如月黑无光 渗进梦的战场\n逃入无声的场 放手或心嚷嚷\n隐秘的极端 爱是极致风浪\n灵魂彻底交偿 你是终极虚妄",
+    "audio_duration": 146.91997916666668,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": true,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.03876018524169922,
+        "diffusion": 15.962624549865723,
+        "latent2audio": 1.4594337940216064
+    },
+    "actual_seeds": [
+        2065110378
+    ]
+}

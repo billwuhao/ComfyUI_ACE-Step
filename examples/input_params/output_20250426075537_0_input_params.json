@@ -1,0 +1,25 @@
+{
+    "prompt": "surf music",
+    "lyrics": "[verse]\nSunshine on the boulevard the beach is calling loud\nWaves are dancing golden sand under a cotton cloud\nElectric heartbeat pounding fast the tide is on our side\nCatch a wave and feel alive we’ll take it for a ride\n\n[verse]\nPalm trees swaying left to right they know where we belong\nFeel the rhythm of the night it keeps us moving strong\nSea spray kisses salty air we’re flying with the breeze\nChampagne states of mind we ride we do just as we please\n\n[chorus]\nWe’re riding waves of life together hand in hand\nWith every beat we chase the beat it’s our own wonderland\nFeel the music take you higher as the shorelines blur\nThis is our world our endless summer as we live and learn\n\n[bridge]\nMoonlight paints the ocean blue reflections in our eyes\nStars align to light our path we’re surfing through the skies\nEvery moment like a song we sing it loud and clear\nEvery day’s a new adventure with you always near\n\n[verse]\nNeon lights and city sounds they blend with ocean views\nWe’re unstoppable tonight no way that we can lose\nDreams are written in the sand they sparkle in the sun\nTogether we’re a masterpiece our story’s just begun\n\n[chorus]\nWe’re riding waves of life together hand in hand\nWith every beat we chase the beat it’s our own wonderland\nFeel the music take you higher as the shorelines blur\nThis is our world our endless summer as we live and learn",
+    "audio_duration": 236.55997916666666,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": true,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.033666133880615234,
+        "diffusion": 16.291455507278442,
+        "latent2audio": 2.3726775646209717
+    },
+    "actual_seeds": [
+        508630535
+    ]
+}

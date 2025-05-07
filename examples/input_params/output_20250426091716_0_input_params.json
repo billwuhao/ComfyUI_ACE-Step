@@ -1,0 +1,25 @@
+{
+    "prompt": "anime, cute female vocals, kawaii pop, j-pop, childish, piano, guitar, synthesizer, fast, happy, cheerful, lighthearted",
+    "lyrics": "[Chorus]\nねぇ、顔が赤いよ？\nどうしたの？ 熱があるの？\nそれとも怒ってるの？\nねぇ、言ってよ！\n\nどうしてそんな目で見るの？\n私、悪いことした？\n何か間違えたの？\nお願い、やめて… 怖いから…\nだから、やめてよ…\n\n[Bridge]\n目を閉じて、くるっと背を向けて、\n何も見なかったフリするから、\n怒らないで… 許してよ…\n\n[Chorus]\nねぇ、顔が赤いよ？\nどうしたの？ 熱があるの？\nそれとも怒ってるの？\nねぇ、言ってよ！\n\nどうしてそんな目で見るの？\n私、悪いことした？\n何か間違えたの？\nお願い、やめて… 怖いから…\nだから、やめてよ…\n\n[Bridge 2]\n待って、もし私が悪いなら、\nごめんなさいって言うから、\nアイスクリームあげるから、\nもう怒らないで？\n\nOoooh… 言ってよ！",
+    "audio_duration": 160,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": true,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.0282442569732666,
+        "diffusion": 12.104875326156616,
+        "latent2audio": 1.587641954421997
+    },
+    "actual_seeds": [
+        4028738662
+    ]
+}

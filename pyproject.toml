@@ -1,0 +1,15 @@
+[project]
+name = "ace-step"
+description = "ACE-Step: A Step Towards Music Generation Foundation Model"
+version = "1.0.0"
+license = {file = "LICENSE"}
+dependencies = ["diffusers", "librosa", "pypinyin", "pytorch_lightning", "soundfile", "hangul-romanize", "num2words", "spacy"]
+
+[project.urls]
+Repository = "https://github.com/billwuhao/ComfyUI_ACE-Step"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = "mw"
+DisplayName = "ComfyUI_ACE-Step"
+Icon = ""

@@ -1,0 +1,25 @@
+{
+    "prompt": "dark, death rock, metal, hardcore, electric guitar, powerful, bass, drums, 110 bpm, G major",
+    "lyrics": "[Verse]\nMy lovers betray me\nThe snake in my garden is hissing\nIn the air is the sweetness of roses\nAnd under my skin\nThere's a thorn\n\n[Verse 2]\nI should have known\nThat God sends his angel in shadows\nWith blood in his veins\nI watch the enemy\nGivin' me the hand of my savior\n\n[Chorus]\nAnd I can't love again\nWith the echo of your name in my head\nWith the demons in my bed\nWith the memories\nYour ghost\nI see it\n'Cause it comes to haunt me\nJust to taunt me\nIt comes to haunt me\nJust to taunt me\n\n[Verse 3]\nWith sugar and spice\nIt's hard to ignore the nostalgia\nWith the men on their knees\nAt the gates of my heart\nHow they beg me\n\n[Verse 4]\nThey say\n\"No one will ever love you\nThe way that I do\nNo one will ever touch you\nThe way that I do\"\n\n[Chorus]\nAnd I can't love again\nWith the echo of your name in my head\nWith the demons in my bed\nWith the memories\nYour ghost\nI see it\n'Cause it comes to haunt me\nJust to taunt me\nIt comes to haunt me\nJust to taunt me",
+    "audio_duration": 174.27997916666666,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": true,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 3.8372838497161865,
+        "diffusion": 13.039669275283813,
+        "latent2audio": 1.7923030853271484
+    },
+    "actual_seeds": [
+        4064916393
+    ]
+}

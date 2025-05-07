@@ -1,0 +1,25 @@
+{
+    "prompt": "melancholic, world, sad, medieval, soulful",
+    "lyrics": "[Verse]\nIn a world so grand he roams the skies alone\nHis heart a heavy stone a tale untold\nWhispers of his past echo through the night\nA lonely dragon searching for the light\n\n[Verse 2]\nOnce a mighty force now he drifts in pain\nHis scales once shimmered now they're dark with shame\nCast out by his kin in shadows he does hide\nA haunting sorrow burns deep inside\n\n[Chorus]\nRoaming endless fields with no friend in sight\nHis roar a mournful cry beneath the moon's pale light\nTears fall like stars as he flies on his way\nA lonely dragon yearning for the break of day\n\n[Bridge]\nThe world turns cold the nights grow long\nIn his heart he carries an ancient song\nOf battles fought and love long gone\nA legend now but his soul is torn\n\n[Verse 3]\nHoping for a day he'll find a kindred soul\nTo share his pain and make him whole\nTill then he drifts a shadow in the sky\nA lonely dragon with tears in his eye\n\n[Chorus]\nRoaming endless fields with no friend in sight\nHis roar a mournful cry beneath the moon's pale light\nTears fall like stars as he flies on his way\nA lonely dragon yearning for the break of day",
+    "audio_duration": 239.99997916666666,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": true,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.029100656509399414,
+        "diffusion": 22.503791570663452,
+        "latent2audio": 2.3603708744049072
+    },
+    "actual_seeds": [
+        2166832218
+    ]
+}
