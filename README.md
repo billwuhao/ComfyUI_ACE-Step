@@ -2,7 +2,7 @@
 
 # ACE-Step Nodes for ComfyUI
 
-Fast, high-quality music generation, "redrawing", remixing, editing, extending, and more.  Windows, Linux, and Mac should all be supported (not fully tested).
+Fast, high-quality music generation, "repainting", remixing, editing, extending, and more.  Windows, Linux, and Mac should all be supported (not fully tested).
 
 Examples:
 
@@ -10,7 +10,7 @@ Examples:
 
 ![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-07_19-53-51.png)
 
-- "Redrawing":
+- "Repainting":
 
 ![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-07_19-59-22.png)
 
