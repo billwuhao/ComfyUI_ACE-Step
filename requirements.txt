@@ -6,3 +6,5 @@ soundfile
 hangul-romanize
 num2words
 spacy
+loguru
+py3langid

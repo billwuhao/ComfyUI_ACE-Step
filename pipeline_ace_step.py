@@ -920,9 +920,9 @@ class ACEStepPipeline:
 
         if is_extend:
             if to_right_pad_gt_latents is not None:
-                target_latents = torch.cate([target_latents, to_right_pad_gt_latents], dim=-1)
+                target_latents = torch.cat([target_latents, to_right_pad_gt_latents], dim=-1)
             if to_left_pad_gt_latents is not None:
-                target_latents = torch.cate([to_right_pad_gt_latents, target_latents], dim=0)
+                target_latents = torch.cat([to_right_pad_gt_latents, target_latents], dim=0)
         return target_latents
 
     def latents2audio(self, latents, target_wav_duration_second=30.0, sample_rate=48000):
