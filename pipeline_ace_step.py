@@ -62,7 +62,6 @@ class ACEStepPipeline:
             self.dtype = torch.float16
 
         self.device = device
-        self.loaded = False
         
         import platform
         system = platform.system()
@@ -70,13 +69,19 @@ class ACEStepPipeline:
             torch_compile = True
         self.torch_compile = torch_compile
 
-    def load_checkpoint(self, checkpoint_dir=None):
+        start_time = time.time()
+        print("Checkpoint not loaded, loading checkpoint...")
+        self.load_checkpoint()
+        load_model_cost = time.time() - start_time
+        print(f"Model loaded in {load_model_cost:.2f} seconds.")
+        
+    def load_checkpoint(self):
         device = self.device
 
-        dcae_model_path = os.path.join(checkpoint_dir, "music_dcae_f8c8")
-        vocoder_model_path = os.path.join(checkpoint_dir, "music_vocoder")
-        ace_step_model_path = os.path.join(checkpoint_dir, "ace_step_transformer")
-        text_encoder_model_path = os.path.join(checkpoint_dir, "umt5-base")
+        dcae_model_path = os.path.join(self.checkpoint_dir, "music_dcae_f8c8")
+        vocoder_model_path = os.path.join(self.checkpoint_dir, "music_vocoder")
+        ace_step_model_path = os.path.join(self.checkpoint_dir, "ace_step_transformer")
+        text_encoder_model_path = os.path.join(self.checkpoint_dir, "umt5-base")
 
         files_exist = (
             os.path.exists(os.path.join(dcae_model_path, "config.json")) and
@@ -93,41 +98,41 @@ class ACEStepPipeline:
         )
 
         if not files_exist:
-            logger.info(f"Checkpoint directory {checkpoint_dir} is not complete, downloading from Hugging Face Hub")
+            logger.info(f"Checkpoint directory {self.checkpoint_dir} is not complete, downloading from Hugging Face Hub")
 
             # download music dcae model
             os.makedirs(dcae_model_path, exist_ok=True)
             hf_hub_download(repo_id=REPO_ID, subfolder="music_dcae_f8c8",
-                            filename="config.json", local_dir=checkpoint_dir, local_dir_use_symlinks=False)
+                            filename="config.json", local_dir=self.checkpoint_dir, local_dir_use_symlinks=False)
             hf_hub_download(repo_id=REPO_ID, subfolder="music_dcae_f8c8",
-                            filename="diffusion_pytorch_model.safetensors", local_dir=checkpoint_dir, local_dir_use_symlinks=False)
+                            filename="diffusion_pytorch_model.safetensors", local_dir=self.checkpoint_dir, local_dir_use_symlinks=False)
 
             # download vocoder model
             os.makedirs(vocoder_model_path, exist_ok=True)
             hf_hub_download(repo_id=REPO_ID, subfolder="music_vocoder",
-                            filename="config.json", local_dir=checkpoint_dir, local_dir_use_symlinks=False)
+                            filename="config.json", local_dir=self.checkpoint_dir, local_dir_use_symlinks=False)
             hf_hub_download(repo_id=REPO_ID, subfolder="music_vocoder",
-                            filename="diffusion_pytorch_model.safetensors", local_dir=checkpoint_dir, local_dir_use_symlinks=False)
+                            filename="diffusion_pytorch_model.safetensors", local_dir=self.checkpoint_dir, local_dir_use_symlinks=False)
 
             # download ace_step transformer model
             os.makedirs(ace_step_model_path, exist_ok=True)
             hf_hub_download(repo_id=REPO_ID, subfolder="ace_step_transformer",
-                            filename="config.json", local_dir=checkpoint_dir, local_dir_use_symlinks=False)
+                            filename="config.json", local_dir=self.checkpoint_dir, local_dir_use_symlinks=False)
             hf_hub_download(repo_id=REPO_ID, subfolder="ace_step_transformer",
-                            filename="diffusion_pytorch_model.safetensors", local_dir=checkpoint_dir, local_dir_use_symlinks=False)
+                            filename="diffusion_pytorch_model.safetensors", local_dir=self.checkpoint_dir, local_dir_use_symlinks=False)
 
             # download text encoder model
             os.makedirs(text_encoder_model_path, exist_ok=True)
             hf_hub_download(repo_id=REPO_ID, subfolder="umt5-base",
-                            filename="config.json", local_dir=checkpoint_dir, local_dir_use_symlinks=False)
+                            filename="config.json", local_dir=self.checkpoint_dir, local_dir_use_symlinks=False)
             hf_hub_download(repo_id=REPO_ID, subfolder="umt5-base",
-                            filename="model.safetensors", local_dir=checkpoint_dir, local_dir_use_symlinks=False)
+                            filename="model.safetensors", local_dir=self.checkpoint_dir, local_dir_use_symlinks=False)
             hf_hub_download(repo_id=REPO_ID, subfolder="umt5-base",
-                            filename="special_tokens_map.json", local_dir=checkpoint_dir, local_dir_use_symlinks=False)
+                            filename="special_tokens_map.json", local_dir=self.checkpoint_dir, local_dir_use_symlinks=False)
             hf_hub_download(repo_id=REPO_ID, subfolder="umt5-base",
-                            filename="tokenizer_config.json", local_dir=checkpoint_dir, local_dir_use_symlinks=False)
+                            filename="tokenizer_config.json", local_dir=self.checkpoint_dir, local_dir_use_symlinks=False)
             hf_hub_download(repo_id=REPO_ID, subfolder="umt5-base",
-                            filename="tokenizer.json", local_dir=checkpoint_dir, local_dir_use_symlinks=False)
+                            filename="tokenizer.json", local_dir=self.checkpoint_dir, local_dir_use_symlinks=False)
 
             logger.info("Models downloaded")
 
@@ -159,7 +164,6 @@ class ACEStepPipeline:
         text_encoder_model.requires_grad_(False)
         self.text_encoder_model = text_encoder_model
         self.text_tokenizer = AutoTokenizer.from_pretrained(text_encoder_checkpoint_path)
-        self.loaded = True
 
         # compile
         if self.torch_compile:
@@ -177,7 +181,6 @@ class ACEStepPipeline:
         self.text_tokenizer = None
         gc.collect()
         torch.cuda.empty_cache()
-        self.loaded = False
 
     def get_text_embeddings(self, texts, device, text_max_length=256):
         inputs = self.text_tokenizer(texts, return_tensors="pt", padding=True, truncation=True, max_length=text_max_length)
@@ -984,14 +987,6 @@ class ACEStepPipeline:
         batch_size: int = 1,
         debug: bool = False,
     ):
-
-        start_time = time.time()
-
-        if not self.loaded:
-            logger.warning("Checkpoint not loaded, loading checkpoint...")
-            self.load_checkpoint(self.checkpoint_dir)
-            load_model_cost = time.time() - start_time
-            logger.info(f"Model loaded in {load_model_cost:.2f} seconds.")
 
         start_time = time.time()
 

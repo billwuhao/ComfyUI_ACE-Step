@@ -266,6 +266,7 @@ class MultiLineLyrics:
     def lyricsgen(self, multi_line_prompt: str):
         return (multi_line_prompt.strip(),)
 
+ap = None
 
 class ACEStepGen:
     @classmethod
@@ -276,7 +277,7 @@ class ACEStepGen:
                 "prompt": ("STRING", {"forceInput": True}),
                 "lyrics": ("STRING", {"forceInput": True}),
                 "parameters": ("STRING", {"forceInput": True}),
-                # "unload_model": ("BOOLEAN", {"default": False}),
+                "unload_model": ("BOOLEAN", {"default": True}),
                 },
         }
 
@@ -288,16 +289,22 @@ class ACEStepGen:
     def acestepgen(self, prompt: str, lyrics: str, parameters: str, unload_model=True):
         
         parameters = ast.literal_eval(parameters)
-        ap = AP(model_path)
+        global ap
+        if ap is None:
+            ap = AP(model_path)
         audio_output = ap(prompt=prompt, lyrics=lyrics, task="text2music", **parameters)
         audio, sr = audio_output[0][0].unsqueeze(0), audio_output[0][1]
+
         if unload_model:
             ap.cleanup()
+            ap = None
         
         return ({"waveform": audio, "sample_rate": sr},)
 
 
 class ACEStepRepainting:
+    def __init__(self):
+        ap = None
     @classmethod
     def INPUT_TYPES(cls):
                
@@ -311,7 +318,7 @@ class ACEStepRepainting:
                 "repaint_end": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1}),
                 "repaint_variance": ("FLOAT", {"default": 0.01, "min": 0.01, "max": 1.0, "step": 0.01}),
                 "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
-                # "unload_model": ("BOOLEAN", {"default": False}),
+                "unload_model": ("BOOLEAN", {"default": True}),
                 },
         }
 
@@ -331,8 +338,10 @@ class ACEStepRepainting:
 
         parameters = ast.literal_eval(parameters)
         parameters["audio_duration"] = audio_duration
+        global ap
+        if ap is None:
+            ap = AP(model_path)
 
-        ap = AP(model_path)
         audio_output = ap(
             prompt=prompt, 
             lyrics=lyrics, 
@@ -349,6 +358,7 @@ class ACEStepRepainting:
         ac.cleanup_file(src_audio_path)
         if unload_model:
             ap.cleanup()
+            ap = None
         
         return ({"waveform": audio, "sample_rate": sr},)
 
@@ -368,7 +378,7 @@ class ACEStepEdit:
                 "edit_n_min": ("FLOAT", {"default": 0.6, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "edit_n_max": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
-                # "unload_model": ("BOOLEAN", {"default": False}),
+                "unload_model": ("BOOLEAN", {"default": True}),
                 },
         }
 
@@ -385,8 +395,10 @@ class ACEStepEdit:
         audio_duration = librosa.get_duration(filename=src_audio_path)
         parameters = ast.literal_eval(parameters)
         parameters["audio_duration"] = audio_duration
+        global ap
+        if ap is None:
+            ap = AP(model_path)
 
-        ap = AP(model_path)
         audio_output = ap(
             prompt=prompt, 
             lyrics=lyrics, 
@@ -404,6 +416,7 @@ class ACEStepEdit:
         ac.cleanup_file(src_audio_path)
         if unload_model:
             ap.cleanup()
+            ap = None
         
         return ({"waveform": audio, "sample_rate": sr},)
 
@@ -422,7 +435,7 @@ class ACEStepExtend:
                 "right_extend_length": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1}),
                 # "repaint_variance": ("FLOAT", {"default": 0.01, "min": 0.01, "max": 1.0, "step": 0.01}),
                 "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
-                # "unload_model": ("BOOLEAN", {"default": False}),
+                "unload_model": ("BOOLEAN", {"default": True}),
                 },
         }
 
@@ -442,8 +455,10 @@ class ACEStepExtend:
 
         parameters = ast.literal_eval(parameters)
         parameters["audio_duration"] = audio_duration
+        global ap
+        if ap is None:
+            ap = AP(model_path)
 
-        ap = AP(model_path)
         audio_output = ap(
             prompt=prompt, 
             lyrics=lyrics, 
@@ -460,6 +475,7 @@ class ACEStepExtend:
         ac.cleanup_file(src_audio_path)
         if unload_model:
             ap.cleanup()
+            ap = None
         
         return ({"waveform": audio, "sample_rate": sr},)
 
