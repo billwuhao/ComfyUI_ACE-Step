@@ -17,8 +17,8 @@ from transformers import UMT5EncoderModel, AutoTokenizer
 
 from language_segmentation import LangSegment
 from music_dcae.music_dcae_pipeline import MusicDCAE
-from models.ace_step_transformer import ACEStepTransformer2DModel
-from models.lyrics_utils.lyric_tokenizer import VoiceBpeTokenizer
+from ace_models.ace_step_transformer import ACEStepTransformer2DModel
+from ace_models.lyrics_utils.lyric_tokenizer import VoiceBpeTokenizer
 from apg_guidance import apg_forward, MomentumBuffer, cfg_forward, cfg_zero_star, cfg_double_condition_forward
 
 torch.backends.cudnn.benchmark = False

@@ -15,7 +15,7 @@ from spacy.lang.ja import Japanese
 from spacy.lang.zh import Chinese
 from tokenizers import Tokenizer
 
-from models.lyrics_utils.zh_num2words import TextNorm as zh_num2words
+from ace_models.lyrics_utils.zh_num2words import TextNorm as zh_num2words
 from typing import Dict, List, Optional, Set, Union
 
 
