@@ -223,26 +223,37 @@ class ACEStepPipeline:
         return last_hidden_states
 
     def set_seeds(self, batch_size, manual_seeds=None):
-        seeds = None
+        processed_input_seeds = None
         if manual_seeds is not None:
             if isinstance(manual_seeds, str):
                 if "," in manual_seeds:
-                    seeds = list(map(int, manual_seeds.split(",")))
+                    processed_input_seeds = list(map(int, manual_seeds.split(",")))
                 elif manual_seeds.isdigit():
-                    seeds = int(manual_seeds)
-
-        random_generators = [torch.Generator(device=self.device) for _ in range(batch_size)]
+                    processed_input_seeds = int(manual_seeds)
+            elif isinstance(manual_seeds, list) and all(isinstance(s, int) for s in manual_seeds):
+                if len(manual_seeds) > 0:
+                    processed_input_seeds = list(manual_seeds)
+            elif isinstance(manual_seeds, int):
+                processed_input_seeds = manual_seeds
+        random_generators = [
+            torch.Generator(device=self.device) for _ in range(batch_size)
+        ]
         actual_seeds = []
         for i in range(batch_size):
-            seed = None
-            if seeds is None:
-                seed = torch.randint(0, 2**32, (1,)).item()
-            if isinstance(seeds, int):
-                seed = seeds
-            if isinstance(seeds, list):
-                seed = seeds[i]
-            random_generators[i].manual_seed(seed)
-            actual_seeds.append(seed)
+            current_seed_for_generator = None
+            if processed_input_seeds is None:
+                current_seed_for_generator = torch.randint(0, 2**32, (1,)).item()
+            elif isinstance(processed_input_seeds, int):
+                current_seed_for_generator = processed_input_seeds
+            elif isinstance(processed_input_seeds, list):
+                if i < len(processed_input_seeds):
+                    current_seed_for_generator = processed_input_seeds[i]
+                else:
+                    current_seed_for_generator = processed_input_seeds[-1]
+            if current_seed_for_generator is None:
+                 current_seed_for_generator = torch.randint(0, 2**32, (1,)).item()
+            random_generators[i].manual_seed(current_seed_for_generator)
+            actual_seeds.append(current_seed_for_generator)
         return random_generators, actual_seeds
 
     def get_lang(self, text):
