@@ -8,3 +8,4 @@ num2words
 spacy
 loguru
 py3langid
+cutlet

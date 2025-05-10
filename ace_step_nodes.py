@@ -514,7 +514,10 @@ class ACEStepExtend:
         return ({"waveform": audio, "sample_rate": sr},)
 
 
+from .text2lyric import LyricsLangSwitch
+
 NODE_CLASS_MAPPINGS = {
+    "LyricsLangSwitch": LyricsLangSwitch,
     "ACEStepGen": ACEStepGen,
     "GenerationParameters": GenerationParameters,
     "MultiLinePromptACES": MultiLinePromptACES,
@@ -525,6 +528,7 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "LyricsLangSwitch": "ACE-Step Lyrics Language Switch",
     "ACEStepGen": "ACE-Step",
     "GenerationParameters": "ACE-Step Parameters",
     "MultiLinePromptACES": "ACE-Step Prompt",
