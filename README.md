@@ -36,6 +36,10 @@ Examples:
 
 ![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-07_20-09-52.png)
 
+- Automatically generate lyrics, prompt, pause workflow, modify and then click `continue workflow` to continue workflow [example](workflow-examples/ACE-gen-automated-composition.json). The latest Gemini, Qwen3, and DeepSeek v3 are available:
+
+![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-11_00-38-33.png)
+
 ## 📣 Updates
 
 [2025-05-10]⚒️: Added a node for lyrics language conversion to provide multilingual support for the official [ComfyUI](https://docs.comfy.org/tutorials/audio/ace-step/ace-step-v1) ACE-Step workflow.

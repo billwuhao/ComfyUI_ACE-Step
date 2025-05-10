@@ -36,6 +36,10 @@
 
 ![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-07_20-09-52.png)
 
+- 自动生成歌词, prompt, 暂停工作流, 修改然后点击 `continue workflow` 继续工作流 [example](workflow-examples/ACE-gen-automated-composition.json). 可用最新的 Gemini, Qwen3, 以及 DeepSeek v3.:
+
+![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-11_00-38-33.png)
+
 ## 📣 更新
 
 [2025-05-10]⚒️: 增加歌词语言转换节点, 为 [ComfyUI](https://docs.comfy.org/tutorials/audio/ace-step/ace-step-v1) 官方版 ACE-Step 工作流提供多语言支持. 
