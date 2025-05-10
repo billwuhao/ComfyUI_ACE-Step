@@ -25,8 +25,8 @@ from diffusers.models.embeddings import TimestepEmbedding, Timesteps
 from diffusers.loaders import FromOriginalModelMixin, PeftAdapterMixin
 
 
-from .attention import LinearTransformerBlock, t2i_modulate
-from .lyrics_utils.lyric_encoder import ConformerEncoder as LyricEncoder
+from ace_step.ace_models.attention import LinearTransformerBlock, t2i_modulate
+from ace_step.ace_models.lyrics_utils.lyric_encoder import ConformerEncoder as LyricEncoder
 
 
 def cross_norm(hidden_states, controlnet_input):

@@ -17,7 +17,7 @@ from diffusers.configuration_utils import ConfigMixin, register_to_config
 
 
 try:
-    from music_log_mel import LogMelSpectrogram
+    from ace_step.music_dcae.music_log_mel import LogMelSpectrogram
 except ImportError:
     from .music_log_mel import LogMelSpectrogram
 

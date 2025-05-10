@@ -9,7 +9,7 @@ from diffusers.configuration_utils import ConfigMixin, register_to_config
 
 
 try:
-    from .music_vocoder import ADaMoSHiFiGANV1
+    from ace_step.music_dcae.music_vocoder import ADaMoSHiFiGANV1
 except ImportError:
     from music_vocoder import ADaMoSHiFiGANV1
 

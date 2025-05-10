@@ -6,38 +6,37 @@ import os
 import ast
 import sys
 import librosa
+from loguru import logger
+from huggingface_hub import hf_hub_download, snapshot_download
+
+from transformers import UMT5EncoderModel, AutoTokenizer
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
 
-from pipeline_ace_step import ACEStepPipeline as AP
+from ace_step.pipeline_ace_step import ACEStepPipeline as AP
+from ace_step.music_dcae.music_dcae_pipeline import MusicDCAE
+from ace_step.ace_models.ace_step_transformer import ACEStepTransformer2DModel
 
 import folder_paths
 cache_dir = folder_paths.get_temp_directory()
 models_dir = folder_paths.models_dir
-model_path = os.path.join(models_dir, "TTS", "ACE-Step-v1-3.5B")
+
+torch.backends.cudnn.benchmark = False
+torch.set_float32_matmul_precision('high')
+torch.backends.cudnn.deterministic = True
+torch.backends.cuda.matmul.allow_tf32 = True
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
 class AudioCacher:
-    """
-    一个用于缓存音频张量到临时文件，并在之后清理这些文件的类。
-    支持作为上下文管理器使用，以便自动清理。
-    """
     def __init__(self, cache_dir: Optional[str] = None, default_format: str = "wav"):
-        """
-        初始化 AudioCacher。
-
-        Args:
-            cache_dir (Optional[str]): 缓存文件存放的目录。
-                                       如果为 None，则使用系统默认的临时目录。
-            default_format (str): 默认的音频文件格式后缀 (例如 "wav", "mp3", "flac")。
-        """
         if cache_dir is None:
             self.cache_dir = tempfile.gettempdir()
         else:
             self.cache_dir = cache_dir
-        # 确保缓存目录存在
+        
         if not os.path.exists(self.cache_dir):
             try:
                 os.makedirs(self.cache_dir, exist_ok=True)
@@ -53,40 +52,24 @@ class AudioCacher:
         filename_prefix: str = "cached_audio_",
         audio_format: Optional[str] = None
     ) -> str:
-        """
-        将音频张量保存到缓存文件，并返回文件路径。
-
-        Args:
-            audio_tensor (torch.Tensor): 要保存的音频张量。
-            sample_rate (int): 音频的采样率。
-            filename_prefix (str): 缓存文件名的前缀。
-            audio_format (Optional[str]): 要使用的音频格式 (例如 "wav", "mp3")。
-                                       如果为 None，则使用初始化时设置的 default_format。
-
-        Returns:
-            str: 保存的缓存文件的绝对路径。
-
-        Raises:
-            RuntimeError: 如果保存音频失败。
-        """
+        
         current_format = (audio_format or self.default_format).lstrip('.')
-        # 创建一个带特定后缀的临时文件，但不立即删除
-        # NamedTemporaryFile 会在创建时打开文件，我们需要先关闭它才能让 torchaudio.save 使用
+        
         try:
             with tempfile.NamedTemporaryFile(
                 prefix=filename_prefix,
                 suffix=f".{current_format}",
                 dir=self.cache_dir,
-                delete=False  # 这是关键，我们手动管理删除
+                delete=False 
             ) as tmp_file:
                 temp_filepath = tmp_file.name
-            # 此时 tmp_file 已经关闭，但文件因 delete=False 而保留
+            
             torchaudio.save(temp_filepath, audio_tensor, sample_rate)
-            # 如果在上下文管理器中使用，则记录此文件以备自动清理
+            
             self._files_to_cleanup_in_context.append(temp_filepath)
             return temp_filepath
         except Exception as e:
-            # 如果 temp_filepath 已定义且文件存在，尝试删除，因为它可能不完整或损坏
+            
             if 'temp_filepath' in locals() and os.path.exists(temp_filepath):
                 try:
                     os.remove(temp_filepath)
@@ -105,21 +88,19 @@ class AudioCacher:
             bool: 如果文件成功删除或文件不存在，则返回 True；如果删除失败，则返回 False。
         """
         if not filepath:
-            return True # 没有文件可以删除，所以认为是“成功”
+            return True 
         if os.path.exists(filepath):
             try:
                 os.remove(filepath)
-                # 如果文件在上下文中被跟踪，也从中移除
                 if filepath in self._files_to_cleanup_in_context:
                     self._files_to_cleanup_in_context.remove(filepath)
                 return True
             except OSError as e:
                 return False
         else:
-            # 如果文件在上下文中被跟踪，也从中移除
             if filepath in self._files_to_cleanup_in_context:
                 self._files_to_cleanup_in_context.remove(filepath)
-            return True # 文件不存在，也视为清理“成功”
+            return True 
 
     def cleanup_all_tracked_files(self) -> None:
         """
@@ -128,7 +109,7 @@ class AudioCacher:
         # 迭代列表的副本，因为 cleanup_file 可能会修改列表
         for f_path in list(self._files_to_cleanup_in_context):
             self.cleanup_file(f_path)
-        self._files_to_cleanup_in_context.clear() # 确保列表被清空
+        self._files_to_cleanup_in_context.clear() 
 
     def __enter__(self):
         """进入上下文管理器时调用。"""
@@ -143,7 +124,7 @@ class AudioCacher:
         return False
 
 
-from data_sampler import DataSampler
+from ace_step.data_sampler import DataSampler
 
 def sample_data(json_data):
     return (
@@ -190,6 +171,34 @@ use_erg_diffusion, \
 oss_steps, \
 guidance_scale_text, \
 guidance_scale_lyric = json_data
+
+device = torch.device("cpu")
+dtype = torch.float32
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+    dtype = torch.bfloat16
+elif torch.backends.mps.is_available():
+    device = torch.device("mps")
+    dtype = torch.float16
+    
+def load_model():
+    model_path = os.path.join(models_dir, "TTS", "ACE-Step-v1-3.5B")
+    dcae_checkpoint_path = os.path.join(model_path, "music_dcae_f8c8")
+    vocoder_checkpoint_path = os.path.join(model_path, "music_vocoder")
+    ace_step_checkpoint_path = os.path.join(model_path, "ace_step_transformer")
+    text_encoder_checkpoint_path = os.path.join(model_path, "umt5-base")
+
+    import time
+    start_time = time.time()
+    print("Checkpoint not loaded, loading checkpoint...")
+    music_dcae = MusicDCAE(dcae_checkpoint_path=dcae_checkpoint_path, vocoder_checkpoint_path=vocoder_checkpoint_path)
+    ace_step = ACEStepTransformer2DModel.from_pretrained(ace_step_checkpoint_path, torch_dtype=dtype)
+    umt5encoder = UMT5EncoderModel.from_pretrained(text_encoder_checkpoint_path, torch_dtype=dtype)
+    text_tokenizer = AutoTokenizer.from_pretrained(text_encoder_checkpoint_path)
+    load_model_cost = time.time() - start_time
+    print(f"Model loaded in {load_model_cost:.2f} seconds.")
+
+    return music_dcae, ace_step, umt5encoder, text_tokenizer
 
 
 class GenerationParameters:
@@ -279,6 +288,11 @@ class ACEStepGen:
                 "parameters": ("STRING", {"forceInput": True}),
                 "unload_model": ("BOOLEAN", {"default": True}),
                 },
+            "optional": {
+                "ref_audio": ("AUDIO",),
+                "ref_audio_strength": ("FLOAT", {"default": 0.5, "min": 0.01, "max": 1.0, "step": 0.01}),
+                # "cpu_offload": ("BOOLEAN", {"default": True}),
+                },
         }
 
     CATEGORY = "🎤MW/MW-ACE-Step"
@@ -286,13 +300,32 @@ class ACEStepGen:
     RETURN_NAMES = ("music",)
     FUNCTION = "acestepgen"
     
-    def acestepgen(self, prompt: str, lyrics: str, parameters: str, unload_model=True):
+    def acestepgen(self, prompt: str, lyrics: str, parameters: str, ref_audio=None, ref_audio_strength=None, cpu_offload=False, unload_model=True):
         
         parameters = ast.literal_eval(parameters)
         global ap
         if ap is None:
-            ap = AP(model_path)
-        audio_output = ap(prompt=prompt, lyrics=lyrics, task="text2music", **parameters)
+            ap = AP(*load_model(), device=device, dtype=dtype, cpu_offload=cpu_offload)
+
+        ac = AudioCacher(cache_dir=cache_dir)
+        audio2audio_enable = False
+        ref_audio_input = None
+
+        if ref_audio is not None:
+            ref_audio_path = ac.cache_audio_tensor(ref_audio["waveform"].squeeze(0), ref_audio["sample_rate"], filename_prefix="ref_audio_")
+            audio2audio_enable = True
+            ref_audio_strength = ref_audio_strength
+            ref_audio_input = ref_audio_path
+
+        audio_output = ap(
+            prompt=prompt, 
+            lyrics=lyrics, 
+            task="audio2audio", 
+            audio2audio_enable=audio2audio_enable, 
+            ref_audio_strength=ref_audio_strength, 
+            ref_audio_input=ref_audio_input, 
+            **parameters
+            )
         audio, sr = audio_output[0][0].unsqueeze(0), audio_output[0][1]
 
         if unload_model:
@@ -303,8 +336,6 @@ class ACEStepGen:
 
 
 class ACEStepRepainting:
-    def __init__(self):
-        ap = None
     @classmethod
     def INPUT_TYPES(cls):
                
@@ -319,6 +350,7 @@ class ACEStepRepainting:
                 "repaint_variance": ("FLOAT", {"default": 0.01, "min": 0.01, "max": 1.0, "step": 0.01}),
                 "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
                 "unload_model": ("BOOLEAN", {"default": True}),
+                # "cpu_offload": ("BOOLEAN", {"default": True}),
                 },
         }
 
@@ -327,7 +359,7 @@ class ACEStepRepainting:
     RETURN_NAMES = ("music",)
     FUNCTION = "acesteprepainting"
     
-    def acesteprepainting(self, src_audio, prompt: str, lyrics: str, parameters: str, repaint_start, repaint_end, repaint_variance, seed, unload_model=True):
+    def acesteprepainting(self, src_audio, prompt: str, lyrics: str, parameters: str, repaint_start, repaint_end, repaint_variance, seed, unload_model=True, cpu_offload=False):
         retake_seeds = [str(seed)]
         ac = AudioCacher(cache_dir=cache_dir)
         src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
@@ -340,7 +372,7 @@ class ACEStepRepainting:
         parameters["audio_duration"] = audio_duration
         global ap
         if ap is None:
-            ap = AP(model_path)
+            ap = AP(*load_model(), device=device, dtype=dtype, cpu_offload=cpu_offload)
 
         audio_output = ap(
             prompt=prompt, 
@@ -379,6 +411,7 @@ class ACEStepEdit:
                 "edit_n_max": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
                 "unload_model": ("BOOLEAN", {"default": True}),
+                # "cpu_offload": ("BOOLEAN", {"default": True}),
                 },
         }
 
@@ -387,7 +420,7 @@ class ACEStepEdit:
     RETURN_NAMES = ("music",)
     FUNCTION = "acestepedit"
     
-    def acestepedit(self, src_audio, prompt: str, lyrics: str, parameters: str, edit_prompt, edit_lyrics, edit_n_min, edit_n_max, seed, unload_model=True):
+    def acestepedit(self, src_audio, prompt: str, lyrics: str, parameters: str, edit_prompt, edit_lyrics, edit_n_min, edit_n_max, seed, unload_model=True, cpu_offload=False):
         retake_seeds = [str(seed)]
         ac = AudioCacher(cache_dir=cache_dir)
         src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
@@ -397,7 +430,7 @@ class ACEStepEdit:
         parameters["audio_duration"] = audio_duration
         global ap
         if ap is None:
-            ap = AP(model_path)
+            ap = AP(*load_model(), device=device, dtype=dtype, cpu_offload=cpu_offload)
 
         audio_output = ap(
             prompt=prompt, 
@@ -436,6 +469,7 @@ class ACEStepExtend:
                 # "repaint_variance": ("FLOAT", {"default": 0.01, "min": 0.01, "max": 1.0, "step": 0.01}),
                 "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
                 "unload_model": ("BOOLEAN", {"default": True}),
+                # "cpu_offload": ("BOOLEAN", {"default": True}),
                 },
         }
 
@@ -444,7 +478,7 @@ class ACEStepExtend:
     RETURN_NAMES = ("music",)
     FUNCTION = "acestepextend"
     
-    def acestepextend(self, src_audio, prompt: str, lyrics: str, parameters: str, left_extend_length, right_extend_length, seed, unload_model=True):
+    def acestepextend(self, src_audio, prompt: str, lyrics: str, parameters: str, left_extend_length, right_extend_length, seed, unload_model=True, cpu_offload=False):
         retake_seeds = [str(seed)]
         ac = AudioCacher(cache_dir=cache_dir)
         src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
@@ -457,7 +491,7 @@ class ACEStepExtend:
         parameters["audio_duration"] = audio_duration
         global ap
         if ap is None:
-            ap = AP(model_path)
+            ap = AP(*load_model(), device=device, dtype=dtype, cpu_offload=cpu_offload)
 
         audio_output = ap(
             prompt=prompt, 

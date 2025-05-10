@@ -23,7 +23,7 @@ from diffusers.models.normalization import RMSNorm
 
 try:
     # from .dcformer import DCMHAttention
-    from .customer_attention_processor import Attention, CustomLiteLAProcessor2_0, CustomerAttnProcessor2_0
+    from ace_step.ace_models.customer_attention_processor import Attention, CustomLiteLAProcessor2_0, CustomerAttnProcessor2_0
 except ImportError:
     # from dcformer import DCMHAttention
     from customer_attention_processor import Attention, CustomLiteLAProcessor2_0, CustomerAttnProcessor2_0

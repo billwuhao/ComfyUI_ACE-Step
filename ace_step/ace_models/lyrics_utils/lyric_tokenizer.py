@@ -2,9 +2,9 @@ import os
 import re
 import textwrap
 from functools import cached_property
-
 import pypinyin
 import torch
+
 from hangul_romanize import Transliter
 from hangul_romanize.rule import academic
 from num2words import num2words
@@ -14,9 +14,9 @@ from spacy.lang.es import Spanish
 from spacy.lang.ja import Japanese
 from spacy.lang.zh import Chinese
 from tokenizers import Tokenizer
-
-from ace_models.lyrics_utils.zh_num2words import TextNorm as zh_num2words
 from typing import Dict, List, Optional, Set, Union
+
+from ace_step.ace_models.lyrics_utils.zh_num2words import TextNorm as zh_num2words
 
 
 #copy from https://github.com/coqui-ai/TTS/blob/dbf1a08a0d4e47fdad6172e433eeb34bc6b13b4e/TTS/tts/layers/xtts/tokenizer.py

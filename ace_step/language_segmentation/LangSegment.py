@@ -30,7 +30,7 @@ from collections import defaultdict
 from py3langid.langid import LanguageIdentifier, MODEL_FILE
 
 # Digital processing
-try:from .utils.num import num2str
+try:from ace_step.language_segmentation.utils.num import num2str
 except ImportError:
     try:from utils.num import num2str
     except ImportError as e:
