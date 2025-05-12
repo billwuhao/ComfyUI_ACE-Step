@@ -6,7 +6,7 @@ Fast, high-quality music generation, "repainting", remixing, editing, extending,
 
 ## 📣 Updates
 
-[2025-05-12]⚒️: Add model loader node, customizable model loading. Thank you for @[thezveroboy's](https://github.com/thezveroboy) contribution.
+[2025-05-12]⚒️: Add model loader node, customizable model loading. Thank you for @[thezveroboy's](https://github.com/thezveroboy) contribution. Add `cpu_offload`, 8g of memory available, faster speed.
 
 ![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-12_09-37-42.png)
 

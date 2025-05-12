@@ -6,7 +6,7 @@
 
 ## 📣 更新
 
-[2025-05-12]⚒️: 增加模型加载节点, 可自定义模型加载. 感谢 @[thezveroboy](https://github.com/thezveroboy) 的贡献.
+[2025-05-12]⚒️: 增加模型加载节点, 可自定义模型加载. 感谢 @[thezveroboy](https://github.com/thezveroboy) 的贡献. 增加 `cpu_offload`, 8g 显存可用, 速度更快.
 
 ![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-12_09-37-42.png)
 
