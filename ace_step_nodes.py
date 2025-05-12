@@ -22,6 +22,7 @@ from ace_step.ace_models.ace_step_transformer import ACEStepTransformer2DModel
 import folder_paths
 cache_dir = folder_paths.get_temp_directory()
 models_dir = folder_paths.models_dir
+model_path = os.path.join(models_dir, "TTS", "ACE-Step-v1-3.5B")
 
 torch.backends.cudnn.benchmark = False
 torch.set_float32_matmul_precision('high')
@@ -181,25 +182,6 @@ elif torch.backends.mps.is_available():
     device = torch.device("mps")
     dtype = torch.float16
     
-def load_model():
-    model_path = os.path.join(models_dir, "TTS", "ACE-Step-v1-3.5B")
-    dcae_checkpoint_path = os.path.join(model_path, "music_dcae_f8c8")
-    vocoder_checkpoint_path = os.path.join(model_path, "music_vocoder")
-    ace_step_checkpoint_path = os.path.join(model_path, "ace_step_transformer")
-    text_encoder_checkpoint_path = os.path.join(model_path, "umt5-base")
-
-    import time
-    start_time = time.time()
-    print("Checkpoint not loaded, loading checkpoint...")
-    music_dcae = MusicDCAE(dcae_checkpoint_path=dcae_checkpoint_path, vocoder_checkpoint_path=vocoder_checkpoint_path)
-    ace_step = ACEStepTransformer2DModel.from_pretrained(ace_step_checkpoint_path, torch_dtype=dtype)
-    umt5encoder = UMT5EncoderModel.from_pretrained(text_encoder_checkpoint_path, torch_dtype=dtype)
-    text_tokenizer = AutoTokenizer.from_pretrained(text_encoder_checkpoint_path)
-    load_model_cost = time.time() - start_time
-    print(f"Model loaded in {load_model_cost:.2f} seconds.")
-
-    return music_dcae, ace_step, umt5encoder, text_tokenizer
-
 
 class GenerationParameters:
     @classmethod
@@ -275,6 +257,49 @@ class MultiLineLyrics:
     def lyricsgen(self, multi_line_prompt: str):
         return (multi_line_prompt.strip(),)
 
+
+class ACEModelLoader:
+    @classmethod
+    def INPUT_TYPES(cls):
+        models = [name for name in os.listdir(model_path) if os.path.isdir(os.path.join(model_path, name)) and not name.startswith(".")]
+        return {
+            "required": {
+                "dcae_checkpoint": (models, {"default": "music_dcae_f8c8"}),
+                "vocoder_checkpoint": (models, {"default": "music_vocoder"}),
+                "ace_step_checkpoint": (models, {"default": "ace_step_transformer"}),
+                "text_encoder_checkpoint": (models, {"default": "umt5-base"}),
+            }
+        }
+
+    RETURN_TYPES = ("ACE_MODELS",)
+    RETURN_NAMES = ("models",)
+    FUNCTION = "load"
+    CATEGORY = "🎤MW/MW-ACE-Step"
+
+    def load(self, dcae_checkpoint, vocoder_checkpoint, ace_step_checkpoint, text_encoder_checkpoint):
+        dcae_checkpoint = os.path.join(model_path, "music_dcae_f8c8")
+        vocoder_checkpoint = os.path.join(model_path, "music_vocoder")
+        ace_step_checkpoint = os.path.join(model_path, "ace_step_transformer")
+        text_encoder_checkpoint = os.path.join(model_path, "umt5-base")
+
+        for path in [dcae_checkpoint, vocoder_checkpoint, ace_step_checkpoint, text_encoder_checkpoint]:
+            if not os.path.exists(path):
+                raise FileNotFoundError(f"Checkpoint not found: {path}")
+
+        models = (
+            MusicDCAE(
+                dcae_checkpoint_path=dcae_checkpoint,
+                vocoder_checkpoint_path=vocoder_checkpoint
+            ),
+            ACEStepTransformer2DModel.from_pretrained(ace_step_checkpoint, torch_dtype=dtype),
+            UMT5EncoderModel.from_pretrained(text_encoder_checkpoint, torch_dtype=dtype),
+            AutoTokenizer.from_pretrained(text_encoder_checkpoint),
+            device,
+            dtype
+        )
+        return (models,)
+
+
 ap = None
 
 class ACEStepGen:
@@ -283,6 +308,7 @@ class ACEStepGen:
                
         return {
             "required": {
+                "models": ("ACE_MODELS",),
                 "prompt": ("STRING", {"forceInput": True}),
                 "lyrics": ("STRING", {"forceInput": True}),
                 "parameters": ("STRING", {"forceInput": True}),
@@ -300,12 +326,12 @@ class ACEStepGen:
     RETURN_NAMES = ("music",)
     FUNCTION = "acestepgen"
     
-    def acestepgen(self, prompt: str, lyrics: str, parameters: str, ref_audio=None, ref_audio_strength=None, cpu_offload=False, unload_model=True):
+    def acestepgen(self, models, prompt: str, lyrics: str, parameters: str, ref_audio=None, ref_audio_strength=None, cpu_offload=False, unload_model=True):
         
         parameters = ast.literal_eval(parameters)
         global ap
         if ap is None:
-            ap = AP(*load_model(), device=device, dtype=dtype, cpu_offload=cpu_offload)
+            ap = AP(*models, cpu_offload=cpu_offload)
 
         ac = AudioCacher(cache_dir=cache_dir)
         audio2audio_enable = False
@@ -341,6 +367,7 @@ class ACEStepRepainting:
                
         return {
             "required": {
+                "models": ("ACE_MODELS",),
                 "src_audio": ("AUDIO",),
                 "prompt": ("STRING", {"forceInput": True}),
                 "lyrics": ("STRING", {"forceInput": True}),
@@ -359,7 +386,7 @@ class ACEStepRepainting:
     RETURN_NAMES = ("music",)
     FUNCTION = "acesteprepainting"
     
-    def acesteprepainting(self, src_audio, prompt: str, lyrics: str, parameters: str, repaint_start, repaint_end, repaint_variance, seed, unload_model=True, cpu_offload=False):
+    def acesteprepainting(self, models, src_audio, prompt: str, lyrics: str, parameters: str, repaint_start, repaint_end, repaint_variance, seed, unload_model=True, cpu_offload=False):
         retake_seeds = [str(seed)]
         ac = AudioCacher(cache_dir=cache_dir)
         src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
@@ -372,7 +399,7 @@ class ACEStepRepainting:
         parameters["audio_duration"] = audio_duration
         global ap
         if ap is None:
-            ap = AP(*load_model(), device=device, dtype=dtype, cpu_offload=cpu_offload)
+            ap = AP(*models, cpu_offload=cpu_offload)
 
         audio_output = ap(
             prompt=prompt, 
@@ -401,6 +428,7 @@ class ACEStepEdit:
                
         return {
             "required": {
+                "models": ("ACE_MODELS",),
                 "src_audio": ("AUDIO",),
                 "prompt": ("STRING", {"forceInput": True}),
                 "lyrics": ("STRING", {"forceInput": True}),
@@ -420,7 +448,7 @@ class ACEStepEdit:
     RETURN_NAMES = ("music",)
     FUNCTION = "acestepedit"
     
-    def acestepedit(self, src_audio, prompt: str, lyrics: str, parameters: str, edit_prompt, edit_lyrics, edit_n_min, edit_n_max, seed, unload_model=True, cpu_offload=False):
+    def acestepedit(self, models, src_audio, prompt: str, lyrics: str, parameters: str, edit_prompt, edit_lyrics, edit_n_min, edit_n_max, seed, unload_model=True, cpu_offload=False):
         retake_seeds = [str(seed)]
         ac = AudioCacher(cache_dir=cache_dir)
         src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
@@ -430,7 +458,7 @@ class ACEStepEdit:
         parameters["audio_duration"] = audio_duration
         global ap
         if ap is None:
-            ap = AP(*load_model(), device=device, dtype=dtype, cpu_offload=cpu_offload)
+            ap = AP(*models, cpu_offload=cpu_offload)
 
         audio_output = ap(
             prompt=prompt, 
@@ -460,6 +488,7 @@ class ACEStepExtend:
                
         return {
             "required": {
+                "models": ("ACE_MODELS",),
                 "src_audio": ("AUDIO",),
                 "prompt": ("STRING", {"forceInput": True}),
                 "lyrics": ("STRING", {"forceInput": True}),
@@ -478,7 +507,7 @@ class ACEStepExtend:
     RETURN_NAMES = ("music",)
     FUNCTION = "acestepextend"
     
-    def acestepextend(self, src_audio, prompt: str, lyrics: str, parameters: str, left_extend_length, right_extend_length, seed, unload_model=True, cpu_offload=False):
+    def acestepextend(self, models, src_audio, prompt: str, lyrics: str, parameters: str, left_extend_length, right_extend_length, seed, unload_model=True, cpu_offload=False):
         retake_seeds = [str(seed)]
         ac = AudioCacher(cache_dir=cache_dir)
         src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
@@ -491,7 +520,7 @@ class ACEStepExtend:
         parameters["audio_duration"] = audio_duration
         global ap
         if ap is None:
-            ap = AP(*load_model(), device=device, dtype=dtype, cpu_offload=cpu_offload)
+            ap = AP(*models, cpu_offload=cpu_offload)
 
         audio_output = ap(
             prompt=prompt, 
@@ -517,6 +546,7 @@ class ACEStepExtend:
 from .text2lyric import LyricsLangSwitch
 
 NODE_CLASS_MAPPINGS = {
+    "ACEModelLoader": ACEModelLoader,
     "LyricsLangSwitch": LyricsLangSwitch,
     "ACEStepGen": ACEStepGen,
     "GenerationParameters": GenerationParameters,
@@ -528,6 +558,7 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "ACEModelLoader": "ACE-Step Model Loader",
     "LyricsLangSwitch": "ACE-Step Lyrics Language Switch",
     "ACEStepGen": "ACE-Step",
     "GenerationParameters": "ACE-Step Parameters",

@@ -4,6 +4,18 @@
 
 Fast, high-quality music generation, "repainting", remixing, editing, extending, and more.  Windows, Linux, and Mac should all be supported (not fully tested).
 
+## 📣 Updates
+
+[2025-05-12]⚒️: Add model loader node, customizable model loading. Thank you for @[thezveroboy's](https://github.com/thezveroboy) contribution.
+
+![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-12_09-37-42.png)
+
+[2025-05-10]⚒️: Added a node for lyrics language conversion to provide multilingual support for the official [ComfyUI](https://docs.comfy.org/tutorials/audio/ace-step/ace-step-v1) ACE-Step workflow.
+
+[2025-05-07]⚒️: Released version v1.0.0.
+
+## Usage
+
 Added a node for lyrics language conversion to provide multilingual support for the official [ComfyUI](https://docs.comfy.org/tutorials/audio/ace-step/ace-step-v1) ACE-Step workflow. Currently, ACE-Step supports 19 languages, but the following ten languages have better support:
 - English
 - Chinese: [zh]
@@ -17,8 +29,6 @@ Added a node for lyrics language conversion to provide multilingual support for 
 - Korean: [ko]
 
 ![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-10_19-26-46.png)
-
-Examples:
 
 - Generation:
 
@@ -40,12 +50,6 @@ Examples:
 
 ![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-11_00-38-33.png)
 
-## 📣 Updates
-
-[2025-05-10]⚒️: Added a node for lyrics language conversion to provide multilingual support for the official [ComfyUI](https://docs.comfy.org/tutorials/audio/ace-step/ace-step-v1) ACE-Step workflow.
-
-[2025-05-07]⚒️: Released version v1.0.0.
-
 ## Installation
 
 ```
@@ -60,9 +64,9 @@ pip install -r requirements.txt
 
 ## Model Download
 
-The model will be automatically downloaded to the `models\TTS\ACE-Step-v1-3.5B` directory. You can also manually download it and place it in this directory. The manual download structure is as follows:
-
 https://huggingface.co/ACE-Step/ACE-Step-v1-3.5B
+
+Manually download the model and place it in the `models\TTS\ACE-Step-v1-3.5B` directory, with the following structure: 
 
 ```
 ACE-Step-v1-3.5B
