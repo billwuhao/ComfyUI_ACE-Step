@@ -7,7 +7,6 @@ import ast
 import sys
 import librosa
 from loguru import logger
-from huggingface_hub import hf_hub_download, snapshot_download
 
 from transformers import UMT5EncoderModel, AutoTokenizer
 
@@ -312,12 +311,12 @@ class ACEStepGen:
                 "prompt": ("STRING", {"forceInput": True}),
                 "lyrics": ("STRING", {"forceInput": True}),
                 "parameters": ("STRING", {"forceInput": True}),
-                "unload_model": ("BOOLEAN", {"default": True}),
+                # "unload_model": ("BOOLEAN", {"default": True}),
                 },
             "optional": {
                 "ref_audio": ("AUDIO",),
                 "ref_audio_strength": ("FLOAT", {"default": 0.5, "min": 0.01, "max": 1.0, "step": 0.01}),
-                # "cpu_offload": ("BOOLEAN", {"default": True}),
+                "cpu_offload": ("BOOLEAN", {"default": True}),
                 },
         }
 
@@ -326,7 +325,16 @@ class ACEStepGen:
     RETURN_NAMES = ("music",)
     FUNCTION = "acestepgen"
     
-    def acestepgen(self, models, prompt: str, lyrics: str, parameters: str, ref_audio=None, ref_audio_strength=None, cpu_offload=False, unload_model=True):
+    def acestepgen(self, 
+        models, 
+        prompt: str, 
+        lyrics: str, 
+        parameters: str, 
+        ref_audio=None, 
+        ref_audio_strength=None, 
+        cpu_offload=False, 
+        # unload_model=True
+        ):
         
         parameters = ast.literal_eval(parameters)
         global ap
@@ -354,9 +362,9 @@ class ACEStepGen:
             )
         audio, sr = audio_output[0][0].unsqueeze(0), audio_output[0][1]
 
-        if unload_model:
-            ap.cleanup()
-            ap = None
+        # if unload_model:
+        #     ap.cleanup()
+        #     ap = None
         
         return ({"waveform": audio, "sample_rate": sr},)
 
@@ -376,8 +384,8 @@ class ACEStepRepainting:
                 "repaint_end": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1}),
                 "repaint_variance": ("FLOAT", {"default": 0.01, "min": 0.01, "max": 1.0, "step": 0.01}),
                 "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
-                "unload_model": ("BOOLEAN", {"default": True}),
-                # "cpu_offload": ("BOOLEAN", {"default": True}),
+                # "unload_model": ("BOOLEAN", {"default": True}),
+                "cpu_offload": ("BOOLEAN", {"default": True}),
                 },
         }
 
@@ -386,7 +394,19 @@ class ACEStepRepainting:
     RETURN_NAMES = ("music",)
     FUNCTION = "acesteprepainting"
     
-    def acesteprepainting(self, models, src_audio, prompt: str, lyrics: str, parameters: str, repaint_start, repaint_end, repaint_variance, seed, unload_model=True, cpu_offload=False):
+    def acesteprepainting(self, 
+        models, 
+        src_audio, 
+        prompt: str, 
+        lyrics: str, 
+        parameters: str, 
+        repaint_start, 
+        repaint_end, 
+        repaint_variance, 
+        seed, 
+        # unload_model=True, 
+        cpu_offload=False
+        ):
         retake_seeds = [str(seed)]
         ac = AudioCacher(cache_dir=cache_dir)
         src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
@@ -415,9 +435,9 @@ class ACEStepRepainting:
         audio, sr = audio_output[0][0].unsqueeze(0), audio_output[0][1]
 
         ac.cleanup_file(src_audio_path)
-        if unload_model:
-            ap.cleanup()
-            ap = None
+        # if unload_model:
+        #     ap.cleanup()
+        #     ap = None
         
         return ({"waveform": audio, "sample_rate": sr},)
 
@@ -438,8 +458,8 @@ class ACEStepEdit:
                 "edit_n_min": ("FLOAT", {"default": 0.6, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "edit_n_max": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
-                "unload_model": ("BOOLEAN", {"default": True}),
-                # "cpu_offload": ("BOOLEAN", {"default": True}),
+                # "unload_model": ("BOOLEAN", {"default": True}),
+                "cpu_offload": ("BOOLEAN", {"default": True}),
                 },
         }
 
@@ -448,7 +468,20 @@ class ACEStepEdit:
     RETURN_NAMES = ("music",)
     FUNCTION = "acestepedit"
     
-    def acestepedit(self, models, src_audio, prompt: str, lyrics: str, parameters: str, edit_prompt, edit_lyrics, edit_n_min, edit_n_max, seed, unload_model=True, cpu_offload=False):
+    def acestepedit(self, 
+        models, 
+        src_audio, 
+        prompt: str, 
+        lyrics: str, 
+        parameters: str, 
+        edit_prompt, 
+        edit_lyrics, 
+        edit_n_min, 
+        edit_n_max, 
+        seed, 
+        # unload_model=True, 
+        cpu_offload=False
+        ):
         retake_seeds = [str(seed)]
         ac = AudioCacher(cache_dir=cache_dir)
         src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
@@ -475,9 +508,9 @@ class ACEStepEdit:
         audio, sr = audio_output[0][0].unsqueeze(0), audio_output[0][1]
 
         ac.cleanup_file(src_audio_path)
-        if unload_model:
-            ap.cleanup()
-            ap = None
+        # if unload_model:
+        #     ap.cleanup()
+        #     ap = None
         
         return ({"waveform": audio, "sample_rate": sr},)
 
@@ -497,8 +530,8 @@ class ACEStepExtend:
                 "right_extend_length": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1}),
                 # "repaint_variance": ("FLOAT", {"default": 0.01, "min": 0.01, "max": 1.0, "step": 0.01}),
                 "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
-                "unload_model": ("BOOLEAN", {"default": True}),
-                # "cpu_offload": ("BOOLEAN", {"default": True}),
+                # "unload_model": ("BOOLEAN", {"default": True}),
+                "cpu_offload": ("BOOLEAN", {"default": True}),
                 },
         }
 
@@ -507,7 +540,18 @@ class ACEStepExtend:
     RETURN_NAMES = ("music",)
     FUNCTION = "acestepextend"
     
-    def acestepextend(self, models, src_audio, prompt: str, lyrics: str, parameters: str, left_extend_length, right_extend_length, seed, unload_model=True, cpu_offload=False):
+    def acestepextend(self, 
+        models, 
+        src_audio, 
+        prompt: str, 
+        lyrics: str, 
+        parameters: str, 
+        left_extend_length, 
+        right_extend_length, 
+        seed, 
+        # unload_model=True, 
+        cpu_offload=False
+        ):
         retake_seeds = [str(seed)]
         ac = AudioCacher(cache_dir=cache_dir)
         src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
@@ -536,9 +580,9 @@ class ACEStepExtend:
         audio, sr = audio_output[0][0].unsqueeze(0), audio_output[0][1]
 
         ac.cleanup_file(src_audio_path)
-        if unload_model:
-            ap.cleanup()
-            ap = None
+        # if unload_model:
+        #     ap.cleanup()
+        #     ap = None
         
         return ({"waveform": audio, "sample_rate": sr},)
 

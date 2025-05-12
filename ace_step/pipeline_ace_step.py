@@ -92,7 +92,7 @@ class ACEStepPipeline:
         gc.collect()
         torch.cuda.empty_cache()
 
-    # @cpu_offload("text_encoder_model")
+    @cpu_offload("text_encoder_model")
     def get_text_embeddings(self, texts, device, text_max_length=256):
         inputs = self.text_tokenizer(
             texts,
@@ -110,7 +110,7 @@ class ACEStepPipeline:
         attention_mask = inputs["attention_mask"]
         return last_hidden_states, attention_mask
 
-    # @cpu_offload("text_encoder_model")
+    @cpu_offload("text_encoder_model")
     def get_text_embeddings_null(
         self, texts, device, text_max_length=256, tau=0.01, l_min=8, l_max=10
     ):
@@ -232,7 +232,7 @@ class ACEStepPipeline:
                 print("tokenize error", e, "for line", line, "major_language", lang)
         return lyric_token_idx
 
-    # @cpu_offload("ace_step_transformer")
+    @cpu_offload("ace_step_transformer")
     def calc_v(
         self,
         zt_src,
@@ -542,7 +542,7 @@ class ACEStepPipeline:
         init_timestep = indices[0]
         return noisy_image, init_timestep
 
-    # @cpu_offload("ace_step_transformer")
+    @cpu_offload("ace_step_transformer")
     @torch.no_grad()
     def text2music_diffusion_process(
         self,
@@ -1072,7 +1072,7 @@ class ACEStepPipeline:
                 )
         return target_latents
 
-    # @cpu_offload("music_dcae")
+    @cpu_offload("music_dcae")
     def latents2audio(self, latents, target_wav_duration_second=30.0, sample_rate=48000):
         output_audios = []
         bs = latents.shape[0]
@@ -1086,7 +1086,7 @@ class ACEStepPipeline:
             output_audios.append(output_audio)
         return output_audios
 
-    # @cpu_offload("music_dcae")
+    @cpu_offload("music_dcae")
     def infer_latents(self, input_audio_path):
         if input_audio_path is None:
             return None

@@ -1,7 +1,7 @@
 [project]
 name = "ace-step"
 description = "ACE-Step: A Step Towards Music Generation Foundation Model"
-version = "1.0.9"
+version = "1.1.0"
 license = {file = "LICENSE"}
 dependencies = ["diffusers", "librosa", "pypinyin", "pytorch_lightning", "soundfile", "hangul-romanize", "num2words", "spacy"]
 
