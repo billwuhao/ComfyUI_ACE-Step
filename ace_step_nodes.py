@@ -1,12 +1,11 @@
 import torchaudio
 import tempfile
-from typing import Optional, List
+from typing import Optional
 import torch
 import os
 import ast
 import sys
 import librosa
-from loguru import logger
 
 from transformers import UMT5EncoderModel, AutoTokenizer
 
@@ -30,98 +29,27 @@ torch.backends.cuda.matmul.allow_tf32 = True
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 
-class AudioCacher:
-    def __init__(self, cache_dir: Optional[str] = None, default_format: str = "wav"):
-        if cache_dir is None:
-            self.cache_dir = tempfile.gettempdir()
-        else:
-            self.cache_dir = cache_dir
+def cache_audio_tensor(
+    cache_dir,
+    audio_tensor: torch.Tensor,
+    sample_rate: int,
+    filename_prefix: str = "cached_audio_",
+    audio_format: Optional[str] = ".wav"
+) -> str:
+    try:
+        with tempfile.NamedTemporaryFile(
+            prefix=filename_prefix,
+            suffix=audio_format,
+            dir=cache_dir,
+            delete=False 
+        ) as tmp_file:
+            temp_filepath = tmp_file.name
         
-        if not os.path.exists(self.cache_dir):
-            try:
-                os.makedirs(self.cache_dir, exist_ok=True)
-            except OSError as e:
-                raise  # 重新抛出异常，因为这是一个关键的初始化步骤
-        self.default_format = default_format.lstrip('.') # 确保没有前导点
-        self._files_to_cleanup_in_context: List[str] = [] # 用于上下文管理器
+        torchaudio.save(temp_filepath, audio_tensor, sample_rate)
 
-    def cache_audio_tensor(
-        self,
-        audio_tensor: torch.Tensor,
-        sample_rate: int,
-        filename_prefix: str = "cached_audio_",
-        audio_format: Optional[str] = None
-    ) -> str:
-        
-        current_format = (audio_format or self.default_format).lstrip('.')
-        
-        try:
-            with tempfile.NamedTemporaryFile(
-                prefix=filename_prefix,
-                suffix=f".{current_format}",
-                dir=self.cache_dir,
-                delete=False 
-            ) as tmp_file:
-                temp_filepath = tmp_file.name
-            
-            torchaudio.save(temp_filepath, audio_tensor, sample_rate)
-            
-            self._files_to_cleanup_in_context.append(temp_filepath)
-            return temp_filepath
-        except Exception as e:
-            
-            if 'temp_filepath' in locals() and os.path.exists(temp_filepath):
-                try:
-                    os.remove(temp_filepath)
-                except OSError as e_clean:
-                    logger.warning(f"Error cleaning temporary file {temp_filepath}: {e_clean}")
-            raise RuntimeError(f"Failed to save audio: {e}") from e
-
-    def cleanup_file(self, filepath: str) -> bool:
-        """
-        清理指定的缓存文件。
-
-        Args:
-            filepath (str): 要删除的文件的路径。
-
-        Returns:
-            bool: 如果文件成功删除或文件不存在，则返回 True；如果删除失败，则返回 False。
-        """
-        if not filepath:
-            return True 
-        if os.path.exists(filepath):
-            try:
-                os.remove(filepath)
-                if filepath in self._files_to_cleanup_in_context:
-                    self._files_to_cleanup_in_context.remove(filepath)
-                return True
-            except OSError as e:
-                return False
-        else:
-            if filepath in self._files_to_cleanup_in_context:
-                self._files_to_cleanup_in_context.remove(filepath)
-            return True 
-
-    def cleanup_all_tracked_files(self) -> None:
-        """
-        清理所有由当前上下文管理器实例跟踪的缓存文件。
-        """
-        # 迭代列表的副本，因为 cleanup_file 可能会修改列表
-        for f_path in list(self._files_to_cleanup_in_context):
-            self.cleanup_file(f_path)
-        self._files_to_cleanup_in_context.clear() 
-
-    def __enter__(self):
-        """进入上下文管理器时调用。"""
-        # 重置跟踪文件列表，以防同一个实例被多次用于 'with' 语句
-        self._files_to_cleanup_in_context = []
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """退出上下文管理器时调用，负责清理。"""
-        self.cleanup_all_tracked_files()
-        # 返回 False 以便在发生异常时重新抛出异常
-        return False
+        return temp_filepath
+    except Exception as e:
+        raise Exception(f"Error caching audio tensor: {e}")
 
 
 from ace_step.data_sampler import DataSampler
@@ -180,7 +108,9 @@ if torch.cuda.is_available():
 elif torch.backends.mps.is_available():
     device = torch.device("mps")
     dtype = torch.float16
-    
+
+import numpy as np
+MAX_SEED = np.iinfo(np.int32).max
 
 class GenerationParameters:
     @classmethod
@@ -192,7 +122,7 @@ class GenerationParameters:
                       "scheduler_type": (["euler", "heun"], {"default": scheduler_type, "tooltip": "euler is recommended. heun will take more time."}),
                       "cfg_type": (["cfg", "apg", "cfg_star"], {"default": cfg_type, "tooltip": "apg is recommended. cfg and cfg_star are almost the same."}),
                       "omega_scale": ("FLOAT", {"default": omega_scale, "min": -100.0, "max": 100.0, "step": 0.1, "tooltip": "Higher values can reduce artifacts"}),
-                      "seed": ("INT", {"default":manual_seeds, "min": 0, "max": 4294967295, "step": 1}),
+                      "seed": ("INT", {"default":manual_seeds, "min": 0, "max": MAX_SEED, "step": 1}),
                       "guidance_interval": ("FLOAT", {"default": guidance_interval, "min": 0, "max": 1, "step": 0.01, "tooltip": "0.5 means only apply guidance in the middle steps"}),
                       "guidance_interval_decay": ("FLOAT", {"default": guidance_interval_decay, "min": 0.0, "max": 1.0, "step": 0.01, "tooltip": "Guidance scale will decay from guidance_scale to min_guidance_scale in the interval. 0.0 means no decay."}),
                       "min_guidance_scale": ("INT", {"default": min_guidance_scale, "min": 0, "max": 200, "step": 1}),
@@ -341,12 +271,11 @@ class ACEStepGen:
         if ap is None:
             ap = AP(*models, cpu_offload=cpu_offload)
 
-        ac = AudioCacher(cache_dir=cache_dir)
         audio2audio_enable = False
         ref_audio_input = None
 
         if ref_audio is not None:
-            ref_audio_path = ac.cache_audio_tensor(ref_audio["waveform"].squeeze(0), ref_audio["sample_rate"], filename_prefix="ref_audio_")
+            ref_audio_path = cache_audio_tensor(cache_dir, ref_audio["waveform"].squeeze(0), ref_audio["sample_rate"], filename_prefix="ref_audio_")
             audio2audio_enable = True
             ref_audio_strength = ref_audio_strength
             ref_audio_input = ref_audio_path
@@ -383,7 +312,7 @@ class ACEStepRepainting:
                 "repaint_start": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1}),
                 "repaint_end": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1}),
                 "repaint_variance": ("FLOAT", {"default": 0.01, "min": 0.01, "max": 1.0, "step": 0.01}),
-                "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
+                "seed": ("INT", {"default":0, "min": 0, "max": MAX_SEED, "step": 1}),
                 # "unload_model": ("BOOLEAN", {"default": True}),
                 "cpu_offload": ("BOOLEAN", {"default": True}),
                 },
@@ -408,8 +337,8 @@ class ACEStepRepainting:
         cpu_offload=False
         ):
         retake_seeds = [str(seed)]
-        ac = AudioCacher(cache_dir=cache_dir)
-        src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
+
+        src_audio_path = cache_audio_tensor(cache_dir, src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
         
         audio_duration = librosa.get_duration(filename=src_audio_path)
         if repaint_end > audio_duration:
@@ -434,7 +363,6 @@ class ACEStepRepainting:
             
         audio, sr = audio_output[0][0].unsqueeze(0), audio_output[0][1]
 
-        ac.cleanup_file(src_audio_path)
         # if unload_model:
         #     ap.cleanup()
         #     ap = None
@@ -457,7 +385,7 @@ class ACEStepEdit:
                 "edit_lyrics": ("STRING", {"forceInput": True}),
                 "edit_n_min": ("FLOAT", {"default": 0.6, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "edit_n_max": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01}),
-                "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
+                "seed": ("INT", {"default":0, "min": 0, "max": MAX_SEED, "step": 1}),
                 # "unload_model": ("BOOLEAN", {"default": True}),
                 "cpu_offload": ("BOOLEAN", {"default": True}),
                 },
@@ -483,8 +411,8 @@ class ACEStepEdit:
         cpu_offload=False
         ):
         retake_seeds = [str(seed)]
-        ac = AudioCacher(cache_dir=cache_dir)
-        src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
+
+        src_audio_path = cache_audio_tensor(cache_dir, src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
         
         audio_duration = librosa.get_duration(filename=src_audio_path)
         parameters = ast.literal_eval(parameters)
@@ -507,7 +435,6 @@ class ACEStepEdit:
             
         audio, sr = audio_output[0][0].unsqueeze(0), audio_output[0][1]
 
-        ac.cleanup_file(src_audio_path)
         # if unload_model:
         #     ap.cleanup()
         #     ap = None
@@ -529,7 +456,7 @@ class ACEStepExtend:
                 "left_extend_length": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1}),
                 "right_extend_length": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1}),
                 # "repaint_variance": ("FLOAT", {"default": 0.01, "min": 0.01, "max": 1.0, "step": 0.01}),
-                "seed": ("INT", {"default":0, "min": 0, "max": 4294967295, "step": 1}),
+                "seed": ("INT", {"default":0, "min": 0, "max": MAX_SEED, "step": 1}),
                 # "unload_model": ("BOOLEAN", {"default": True}),
                 "cpu_offload": ("BOOLEAN", {"default": True}),
                 },
@@ -553,8 +480,8 @@ class ACEStepExtend:
         cpu_offload=False
         ):
         retake_seeds = [str(seed)]
-        ac = AudioCacher(cache_dir=cache_dir)
-        src_audio_path = ac.cache_audio_tensor(src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
+
+        src_audio_path = cache_audio_tensor(cache_dir, src_audio["waveform"].squeeze(0), src_audio["sample_rate"], filename_prefix="src_audio_")
         
         audio_duration = librosa.get_duration(filename=src_audio_path)
         repaint_start = -left_extend_length
@@ -579,7 +506,6 @@ class ACEStepExtend:
             
         audio, sr = audio_output[0][0].unsqueeze(0), audio_output[0][1]
 
-        ac.cleanup_file(src_audio_path)
         # if unload_model:
         #     ap.cleanup()
         #     ap = None
