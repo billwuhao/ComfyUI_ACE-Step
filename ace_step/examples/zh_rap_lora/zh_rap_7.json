@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora_80k",
+    "task": "text2music",
+    "prompt": "articulate, spoken word, young adult, warm, rap music, male, clear, street, dark, rap flow, hardcore rap",
+    "lyrics": "[verse]\n球场 的 橡胶味 弥漫 隔壁 是 健身房\n场 边上 的 老教练 战术 有 三套\n教 交叉 运球 的 大叔 会 欧洲步 耍 背后 传\n硬 身板 对抗 最 擅长 还 会 急停跳 后仰 投\n他们 徒弟 我 习惯 从小 就 耳濡目染\n什么 胯下 跟 变向 我 都 玩 的 有模有样\n什么 招式 最 喜欢 转身 过 人 柔中 带 刚\n想要 去 纽约 街头 斗 洛克 公园 场\n\n[chorus]\n看什么 看什么\n变速 突破 心 自在\n看什么 看什么\n假动作 晃 开 防守 来\n看什么 看什么\n每日 训练 绑 沙袋\n空中拉杆 莫 奇怪\n唰唰 入袋\n\n[verse]\n一个 试探 步后 一记 左 变向 右 变向\n一句 挑衅 我 的 人 别 嚣张\n一再 重演 一颗 我 不 投 的 球\n悬在 篮筐 上 它 一直 在 摇晃\n\n[chorus]\n看什么 看什么\n我 激活 小宇宙 来\n看什么 看什么\n菜鸟 新人 的 名号\n看什么 看什么\n已 被 我 一球 击倒\n\n[chorus]\n快 秀出 指尖 转球 砰砰 啪嗒\n快 秀出 指尖 转球 砰砰 啪嗒\n篮球 之 人 切记 勇者 无惧\n是 谁 在 玩 花式 引爆 空气\n快 秀出 指尖 转球 砰砰 啪嗒\n快 秀出 指尖 转球 砰砰 啪嗒\n如果 我 有 滞空 逆天 补扣\n为人 热血 不怂 一生 傲骨 吼\n\n[verse]\n他们 徒弟 我 习惯 从小 就 耳濡目染\n什么 胯下 跟 变向 我 都 玩 的 有模有样\n什么 招式 最 喜欢 转身 过 人 柔中 带 刚\n想要 去 纽约 街头 斗 洛克 公园 场\n\n[outro]\n快 秀出 指尖 转球 砰\n快 秀出 指尖 转球 砰\n如果 我 有 滞空 吼\n为人 热血 不怂 一生 傲骨 吼\n快 秀出 指尖 转球 砰\n我 用 背传 助攻 吼\n压哨 的 三分 球",
+    "audio_duration": 239.8355625,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.05357813835144043,
+        "diffusion": 25.644447326660156,
+        "latent2audio": 2.1787476539611816
+    },
+    "actual_seeds": [
+        3246571430
+    ],
+    "retake_seeds": [
+        1352325167
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512152217_0.wav"
+}

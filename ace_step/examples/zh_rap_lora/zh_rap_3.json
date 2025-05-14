@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora",
+    "task": "text2music",
+    "prompt": "electronic, hip-hop, rap, synthesizer, drums, vocals, fast, energetic, modern, uplifting, young adult, male, spoken word, singing, bright, energetic, clear, 140 bpm, female",
+    "lyrics": "[Verse 1]\n红鲤鱼绿鲤鱼，驴在河里追鲤鱼，\n驴追鲤鱼鱼躲驴，气得驴子直喘气。\n扁担长板凳宽，扁担绑在板凳边，\n扁担要绑板凳不让绑，扁担偏要绑上板凳面！\n\n[Chorus]\n绕口令，练嘴皮，\n说快说慢别迟疑，\n红鲤鱼驴扁担板凳，\n一口气念完算你赢！\n\n[Verse 2]\n四是四十是十，十四是十四四十是四十，\n谁说四十是十四，舌头打结别放肆。\n黑化肥会挥发，灰化肥也发黑，\n化肥混一起，黑灰不分嘴发废！\n\n[Chorus]\n绕口令，练嘴皮，\n说快说慢别迟疑，\n四十十四化肥灰，\n念错罚你唱十回！\n\n[Bridge]\n坡上立着一只鹅，坡下流着一条河，\n鹅要过河河渡鹅，河要渡鹅鹅笑河——\n到底谁更啰嗦？！\n\n[Outro]\n嘴皮子功夫别小瞧，\n绕口令rap我最飙，\n下次挑战准备好，\n舌头打结别求饶！",
+    "audio_duration": 123.2,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.7,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.026150941848754883,
+        "diffusion": 12.212433099746704,
+        "latent2audio": 1.1857895851135254
+    },
+    "actual_seeds": [
+        1415752189
+    ],
+    "retake_seeds": [
+        685932970
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512115409_0.wav"
+}

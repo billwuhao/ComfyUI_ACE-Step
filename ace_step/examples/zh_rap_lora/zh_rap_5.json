@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "ACE-Step/ACE-Step-v1-chinese-rap-LoRA",
+    "task": "text2music",
+    "prompt": "G-Funk, Hip Hop, Rap, Female Vocals, Melodic Rap, Summer, Laid-back Groove, Smooth Rhythm, Synthesizer Lead, Heavy Bassline, Groovy, West Coast Hip Hop",
+    "lyrics": "(Intro)\nOh yeah... \n\n(Verse 1)\n阳光下，沙滩排球场，一个身影跳跃\n小麦色，运动背心，闪耀活力四射\n她跳起扣杀，动作利落又巧妙\n汗水浸湿发梢，笑容比阳光更美好\n摇摆的节奏，是她的背景配乐\n每一次移动，都踩在鼓点上那么和谐\n我不由自主地停下脚步\n目光被她紧紧锁住\n\n(Chorus)\n沙滩排球女孩， 摇摆节拍下的身材\n无忧无虑的笑容，把我的心都填满\n想走上前去搭讪，嫌自己笨拙呆板\n这青春的气息，耀眼，灿烂！\n\n(Verse 3)\n她和队友击掌庆祝，笑声清脆悦耳\n拿起毛巾擦汗，不经意间瞥我一眼\n鼓起勇气走上前，假装问问时间\n她友好地回答，笑容灿烂没有敷衍\n聊了几句，发现彼此爱这摇摆音乐\n她眼中也闪过惊喜和亲切\n这共同点，让气氛变得融洽又热烈！\n夏天的故事，就这样开始了感觉真切！\n\n(Chorus)\n沙滩排球女孩， 摇摆节拍下的身材\n无忧无虑的笑容，把我的心都填满\n不再犹豫和等待，勇敢把脚步迈开\n这夏天的感觉，心跳，不断！",
+    "audio_duration": 93.93038,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.03020024299621582,
+        "diffusion": 9.942127704620361,
+        "latent2audio": 0.9470341205596924
+    },
+    "actual_seeds": [
+        3826585299
+    ],
+    "retake_seeds": [
+        2519711205
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512143242_0.wav"
+}

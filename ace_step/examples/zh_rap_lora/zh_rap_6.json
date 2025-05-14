@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora_80k",
+    "task": "text2music",
+    "prompt": "lyrical rap, young adult, female, rap flow, spoken word, ad-libs, bright, energetic, eat, Fast, Engaging, Energetic",
+    "lyrics": "[Intro]\n扁擔寬 板凳長 扁擔想綁在板凳上\n扁擔寬 板凳長 扁擔想綁在板凳上\n\n[Verse]\n倫敦 瑪莉蓮 買了 件 旗袍 送 媽媽\n莫斯科 的 夫司基 愛上 牛肉 麵 疙瘩\n各種 顏色 的 皮膚 各種 顏色 的 頭髮\n嘴裡念的 說的 開始 流行 中國話 (中國話)\n\n[Bridge]\n多少年 我們 苦練 英文 發音 和 文法 (yeah)\n這幾年 換他們 捲著 舌頭 學 平上去入 的 變化\n平平 仄仄 平平 仄\n好聰明 的 中國人 好優美 的 中國話\n\n[Verse]\n扁擔寬 板凳長 扁擔想綁在板凳上\n板凳不讓扁擔綁在板凳上 扁擔偏要綁在板凳上\n板凳偏偏不讓扁擔綁在那板凳上\n到底扁擔寬 還是板凳長？\n\n[Verse]\n哥哥弟弟坡前坐\n坡上臥著一隻鵝 坡下流著一條河\n哥哥說 寬寬的河 弟弟說 白白的鵝\n鵝要過河 河要渡鵝\n不知是那鵝過河 還是河渡鵝\n\n[Chorus]\n全世界都在學中國話\n孔夫子的話 越來越國際化\n全世界都在講中國話\n我們說的話 讓世界都認真聽話\n\n[Verse]\n紐約蘇珊娜開了間禪風 lounge bar\n柏林來的沃夫岡拿胡琴配著電吉他\n各種顏色的皮膚 各種顏色的頭髮\n嘴裡念的 說的 開始流行中國話 (中國話)\n\n[Bridge]\n多少年我們苦練英文發音和文法 (yeah)\n這幾年換他們捲著舌頭學平上去入的變化\n仄仄平平仄仄平\n好聰明的中國人 好優美的中國話\n\n[Verse]\n有個小孩叫小杜 上街打醋又買布\n買了布 打了醋 回頭看見鷹抓兔\n放下布 擱下醋 上前去追鷹和兔\n飛了鷹 跑了兔 灑了醋 濕了布\n\n[Verse]\n嘴說腿 腿說嘴\n嘴說腿 愛跑腿\n腿說嘴 愛賣嘴\n光動嘴 不動腿\n光動腿 不動嘴\n不如不長腿和嘴\n到底是那嘴說腿 還是腿說嘴？\n\n[Chorus]\n全世界都在學中國話\n孔夫子的話 越來越國際化\n全世界都在講中國話\n我們說的話 讓世界都認真聽話\n\n[outro]\n全世界都在學中國話 (在學中國話)\n孔夫子的話 越來越國際化\n全世界都在講中國話\n我們說的話 (讓他) 讓世界 (認真) 都認真聽話",
+    "audio_duration": 239.8355625,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.04363536834716797,
+        "diffusion": 18.706920385360718,
+        "latent2audio": 2.1645781993865967
+    },
+    "actual_seeds": [
+        2364345905
+    ],
+    "retake_seeds": [
+        2100914041
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512145057_0.wav"
+}

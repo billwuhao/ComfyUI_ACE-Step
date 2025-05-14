@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora",
+    "task": "text2music",
+    "prompt": "singing, bright, slightly nasal, energetic, spoken word, young adult, male, rap music",
+    "lyrics": "[Intro]\nYo, check it—speed demon, lyrical heat, uh!\nRatatat like a drum when the beat bumps, uh!\n\n[Verse 1]\nRapatapa tap tap, flash like a snap,\nRap tap tap, I don’t chat, I clap clap clap!\nFingers snap, flow don’t slack, rapataptaptap,\nSpit it fast, hit the gas, rap tap tap rap!\n\n[Pre-Chorus]\nBoom-bap, zoom past, leave ’em flat,\nRap taptaprapataptaptap—where ya at?\n\n[Chorus]\nRapatapa tap tap, yeah, I go brrrr,\nRap tap tap, make the crowd stir!\nRapataptaptap, no lag, just spit,\nRap taptaprapataptaptap—I’m lit!\n\n[Verse 2]\nTongue-twist, quick wrist, rapatapa boom,\nTap tap rap, leave ya stuck like glue-gum!\nNo slow-mo, turbo, rapataptaptap,\nRap tap rap, yeah, I clap clap clap!\n\n[Outro]\nRapatapa—TAP! Mic drop—that’s that.",
+    "audio_duration": 60,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.018491744995117188,
+        "diffusion": 8.084580898284912,
+        "latent2audio": 0.5694489479064941
+    },
+    "actual_seeds": [
+        226581098
+    ],
+    "retake_seeds": [
+        1603201617
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512120348_0.wav"
+}

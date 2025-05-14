@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora_80k",
+    "task": "text2music",
+    "prompt": "articulate, spoken word, young adult, rap music, female, clear, energetic, warm",
+    "lyrics": "[Intro]\n\"System booting... 语言 模型 loading...\"\n\n[Verse 1]\n硅谷 那个 coder 调试 neural network\n北京 的 极客 训练 A I 写 report\n不同 架构 的 chip 不同 算法 的 war\n屏幕上 跑的 全是 machine learning (learning)\n\n[Bridge]\n多少年 我们 chase 摩尔 定律 的 trend (yeah)\n这两年 换他们 study 中文 N L P\nConvolution L S T M\n好烧脑 的 backprop 好暴力 的 big data\n\n[Verse 2]\nPython 强 say加加 刚 Python 调用 C++ 的 A P I\nsay加加 嫌 Python 太 slow Python 笑 C++ 太 hardcore\nL L V M 默默 generate 中间 code\n到底 interpreter 还是 compiler 屌？\n\n[Verse 3]\nP M 和 engineer\n白板 画满 flow chart 服务器 闪着 red light\nP M 说 add feature engineer 说 no way\n需求 变更 code 重构\n不知 是 P M 太 fly 还是 deadline 太 high\n\n[Chorus]\n全世界 都在 train neural network\nTransformer 的 paper 越来越 难 go through\n全世界 都在 tune 超参数\n我们 写的 bug 让 G P U 都 say no\n\n[Verse 4]\n柏林 hackathon demo blockchain contract\n上海 的 dev 用 federated learning 破 data wall\n各种 语言 的 error 各种 框架 的 doc\nterminal 里 滚的 全是 dependency 冲突\n\n[Bridge]\n曾以为 English 才是 coding 的 language (yeah)\n直到见 G P T 用 文言文 generate 正则 expression\nGradient explode\n好硬核 的 prompt 好头秃 的 debug road\n\n[Verse 5]\n有个 bug 叫 quantum\n测试 环境 run perfect 上线 立即就 crash\n查 log 看 monitor 发现是 thread 不同步\n改 sync 加 lock 慢 deadlock 更难办\n量子 computer 也解不开 这 chaos chain\n\n[Verse 6]\n你说 996 我说 007\n你说 福报 我说 burnout\nProduct 要 agile Boss 要 KPI\nCode 要 elegant deadline 是 tomorrow\n不如 直接 script 自动 submit 离职信\n\n[Outro]\n\"Warning: 内存 leak...core dumping...\"\n全世界 都在 train neural network (neural network)\nLoss 还没 converge 天已经亮\n全世界 都在 tune 超参数\n我们 写的 code (让它) 让 world (reboot) 都 reboot 无效",
+    "audio_duration": 179.12,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.062120914459228516,
+        "diffusion": 13.499217987060547,
+        "latent2audio": 1.6430137157440186
+    },
+    "actual_seeds": [
+        1637990575
+    ],
+    "retake_seeds": [
+        101283039
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512154907_0.wav"
+}

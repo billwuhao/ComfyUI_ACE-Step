@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora",
+    "task": "text2music",
+    "prompt": "Chorus Hook, Melodic Rap, Ambient Synth Pads, adult, rap, Very Fast, Storytelling, Chinese Rap, male, spoken word, bright, energetic, Melodic Flow, clear, clarity, 130 bpm",
+    "lyrics": "[Intro]\n舌 头 打 结 了... 快 念 快 念...\n\n[Verse 1]\n这 个 赌 鬼 蹲 在 柜 台 啃 着 苦 瓜 干 快 很 干\n赌 桌 堆 满 骨 牌 古 怪 股 票 和 五 块 钢 镚 儿 钢 镚\n他 甩 出 扑 克 牌 啪 啪 啪 拍 扁 螃 蟹 壳 哦 壳 扁\n又 摸 摸 麻 将 摸 出 幺 鸡 摸 出 发 财 摸 出 一 条 蛇 蛇 蛇\n庄 家 咳 嗽 咳 破 锣 嗓 子 喊 开 开 开 快 开 开\n赌 鬼 咕 嘟 咕 嘟 灌 咖 啡 灌 到 筷 子 戳 穿 碗 快 戳 穿\n空 气 里 飘 着 锅 巴 味 混 合 隔 夜 的 酸 奶 罐 哦 酸\n输 光 裤 带 还 想 翻 盘 翻 成 煎 饼 摊 老 板 快 翻 盘\n\n[Chorus]\n赌 鬼 赌 鬼 哦 赌 鬼 赌 鬼 快 很 快\n舌 头 打 结 着 念 这 段 哦 这 段 绕 口 令 牌\n若 念 错 一 字 就 罚 你 哦 罚 你 吞 十 斤 海 带\n赌 场 规 矩 就 是 绕 晕 你 哦 绕 晕 你 快 很 快\n\n[Verse 2]\n他 掏 出 铜 板 抠 出 口 袋 最 后 一 颗 快 很 颗\n庄 家 哗 啦 哗 啦 摇 骰 子 摇 出 三 点 又 三 点 哦 三 点\n赌 鬼 急 得 咬 牙 切 齿 咬 到 舌 头 打 蝴 蝶 结 快 打 结\n还 想 押 上 祖 传 的 拖 鞋 拖 把 铁 锅 和 半 包 盐 盐 盐\n突 然 警 笛 嘀 嘟 嘀 嘟 吓 得 他 钻 进 垃 圾 罐 哦 垃 圾\n警 察 咔 嚓 咔 嚓 拍 照 拍 到 他 头 顶 菠 菜 叶 快 拍 照\n最 后 赌 鬼 蹲 监 狱 天 天 背 这 首 绕 口 令 哦 背 不 完\n若 背 错 一 句 就 加 刑 十 年 再 加 十 年 快 加 刑\n\n[Outro]\n舌 头 打 结 了... 赌 鬼 哭 了 哦...\n这 首 歌... 绕 死 人 了 哦...",
+    "audio_duration": 186.59997916666666,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.7,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.03011012077331543,
+        "diffusion": 21.696259260177612,
+        "latent2audio": 1.7648537158966064
+    },
+    "actual_seeds": [
+        3776541388
+    ],
+    "retake_seeds": [
+        4274500599
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512114703_0.wav"
+}

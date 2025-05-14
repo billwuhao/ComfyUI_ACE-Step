@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora_80k",
+    "task": "text2music",
+    "prompt": "articulate, spoken word, young adult, rap music, male, clear, energetic, warm, relaxed, breathy, night club, auto-tune, mumble rap, trap",
+    "lyrics": "[verse]\n这 这 谁 又 在 派 对 喝 多\n我 的 脑 袋\n像 被 驴 踢 过\n不 对 劲\n舌 头 打 结 不 会 说\n你 来 挑 战 我 就 跪\n开 局 直 接 崩 溃\n\n[chorus]\n就 咪 乱 咪 念 咪 错 咪\n嘴 咪 瓢 咪 成 咪 狗 咪\n脑 咪 袋 咪 像 咪 浆 咪 糊 咪\n跟 咪 着 咪 节 咪 奏 咪\n把 咪 歌 咪 词 咪 全 咪 忘 咪\n一 咪 张 咪 嘴 咪 就 咪 废 咪\n只 咪 剩 咪 下 咪 尴 咪 尬 咪 回 咪 忆\n草！\n\n[verse]\n错 错 错 错 了\n一 口 气 全 念 错\n错 错 错 错 了\n舌 头 打 结 甩 锅\n甩 甩 甩 甩 锅\n甩 锅 甩 锅\n拍 子 全 部 乱 套\n观 众 笑 到 吐 血\n\n[verse]\n你 的 歌 词 我 的 噩 梦\n唱 完 直 接 社 死\n调 跑 到 外 太 空\n观 众 表 情 裂 开\n你 笑 我 菜\n我 笑 你 不 懂\n这 叫 艺 术 表 演\n不 服 你 来！\n\n[verse]\n这 这 谁 又 在 派 对 丢 人\n我 的 世 界\n已 经 彻 底 崩 溃\n没 有 完 美\n只 有 翻 车 现 场\n以 及 观 众 的 嘲 讽\n\n[chorus]\n就 咪 乱 咪 念 咪 错 咪\n嘴 咪 瓢 咪 成 咪 狗 咪\n脑 咪 袋 咪 像 咪 浆 咪 糊 咪\n跟 咪 着 咪 节 咪 奏 咪\n把 咪 歌 咪 词 咪 全 咪 忘 咪\n一 咪 张 咪 嘴 咪 就 咪 废 咪\n只 咪 剩 咪 下 咪 尴 咪 尬 咪 回 咪 忆\n草！\n\n[verse]\n错 错 错 错 了\n一 口 气 全 念 错\n错 错 错 错 了\n舌 头 打 结 甩 锅\n甩 甩 甩 甩 锅\n甩 锅 甩 锅\n拍 子 全 部 乱 套\n观 众 笑 到 吐 血\n\n[verse]\n你 的 歌 词 我 的 噩 梦\n唱 完 直 接 社 死\n调 跑 到 外 太 空\n观 众 表 情 裂 开\n你 笑 我 菜\n我 笑 你 不 懂\n这 叫 艺 术 表 演\n不 服 你 来！",
+    "audio_duration": 169.12,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.04321885108947754,
+        "diffusion": 14.026689767837524,
+        "latent2audio": 1.5587565898895264
+    },
+    "actual_seeds": [
+        1905941472
+    ],
+    "retake_seeds": [
+        3018484796
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512161832_0.wav"
+}

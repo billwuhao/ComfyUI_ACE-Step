@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora_100k",
+    "task": "text2music",
+    "prompt": "东北话, spoken word, male, Tempo - Fast, Elements - Chorus Hook, Subgenre-Satirical Hip Hop, Rap, Chinese-language music, energetic, slightly nasal, Instrument - Live Bass Guitar, adult, Vocals - Syncopated Flow, Genre - Hip-Hop, rapping, bright",
+    "lyrics": "[verse]\n挣着 憋屈的 工资 还得 装乐呵\n猫着 怂样儿 还搁 朋友圈 嘚瑟\n扛着 傻逼的 指标 没人 搭把手\n这儿 不是 托儿所 少整 那出儿 哭唧尿嚎\n\n俺们 就像 一条条 老板的 裤衩子\n陪着 笑脸 接他 每一回 突突\n哎呦 老板 今儿个 穿我呗\n他 撅个腚 眼角 瞟你 那熊样\n\n[chorus]\n他们 骂我 打工仔 太多人 没睡醒\n寻思 抠搜 老板 一天天 穷折腾\n不想 俺的 人生 烂在 这嘎达\n不想 俺的 将来 折在 这破棚\n\n老子 不想 上班 老子 是外星人\n你都 把俺 骂急眼了 俺还 这么淡定\n现实 才是 梦 啥时候 能醒啊\n那 糟践人的 答案 在西北风 里飘\n\n[verse]\n瞅见 二愣子 同事 给老板 舔腚沟子\n瞅见 浪蹄子 女同事 在老板 胯骨轴 扭搭\n瞅见 白瞎的 光阴 耗在 没亮儿的 道儿\n瞅见 公交车上 一帮 僵尸 吐酸水\n\n瞅见 俺的 命 定在 苦逼的 坑里\n瞅见 俺的 爱情 被轮了 成了 老处女\n瞅见 好事儿 全归 高富帅\n还有 那些 臭不要脸 扭腚的 货色\n\n[chorus]（重复）\n他们 骂我 打工仔 太多人 没睡醒...\n\n[bridge]\n加班 没补助 俺认了\n欠薪 揍员工 把俺 当牲口\n去你妈 的小姘头\n\n[verse]\n破逼 管理制度 净整 娱乐八卦\n撸管式 管理 也就 你自己 嗨\n出点儿 屁事儿 就往 下属 脑瓜子 扣\n挣俩 钢镚儿 立马 牛逼 不分 公母\n\n你挖个 大坑 把俺们 往里 踹\n说这 叫梦想 你当年 多能耐\n俺们 就当 听传销 洗脑课\n可怜 连骗人 你都 就会 这一套\n\n[outro]\n老子 不想 上班\n老子 不想 上班\n老子 不想 上班",
+    "audio_duration": 135.92,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.06204533576965332,
+        "diffusion": 35.75483560562134,
+        "latent2audio": 1.5193355083465576
+    },
+    "actual_seeds": [
+        4176354214
+    ],
+    "retake_seeds": [
+        601086915
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250513044511_0.wav"
+}

@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora_100k",
+    "task": "text2music",
+    "prompt": "Rap, J-Pop, Anime, kawaii pop, EDM, Aggressive, Intense, Crisp Snare, Super Fast, Clear",
+    "lyrics": "[Intro]\nNya.\n\n[Verse]\n我 在 五 点 二 十 早 起，十 三 点 十 四 弹 会儿 琴\n习 惯 了 坐 班，习惯了 隔夜 的  剩 饭，\n习 惯 了 没有 你\n\n[Verse]\n怕 你 想 不 开，拦 在 你 的 面 前\n那 时 候 摔 得 差 点 住 院\n东 京 的 春 天 莺 莺 燕 燕\n我 说 想 不 想 来 跟 我 玩 音乐\n\n[Verse]\n带 着 我 的 朋 友 守 在 你 的 门 口\n弹 着 我 的 钢 琴 当 伴 奏\n等 你 放 学 后，陪 你   K   T   V\n端 着 我 的 红 茶 跟 你 碰 杯\n\n[Pre-Chorus]\n忽然间现实淹没了远方\n万家灯火，盖住月光\n奔走，忍受，变成了人偶\n别再对我伸出你的 双 手，会 受 伤\n\n[Chorus]\n明明都向前走，方向却渐渐不同\n时间让你我越走越近，却越来越陌生\n春 天 在 滂 沱 的 大 雨 里 飘 落\n得 了 心 太 高 脸 太 薄 的病\n\n[Bridge]\n我越难过，春日影越顶\n眼泪晃得我看不清\n埋葬了懦弱还有矫情\n却还是会在半夜摸眼睛\n\n青春期大部分时间在工 作\n用微笑换来余额几个零\n戴上了面具也明白了生活\n拼的是数字和脸更是命\n\n[Verse]\n我在五点二十早起，十三点十四弹会琴\n早上要做饭，回家时满地的瓶罐\n\n师 徒 二 人 站 在 我 的 面 前\n台 词 很 熟 练，照 着 就 念\n\n背 后 的 小 睦 扭 扭 捏 捏\n我 说 我 还 有 点 事 要 不 改 天 见\n\n然 后 你 的 双手 握 住 我 的 袖 口\n开 始 哭 着 求 我 不 要 走\n\n[Verse]\n我在下班后，忙活柴米油\n你和你的姐妹住着高楼\n\n苦 来 兮 苦，早 就 没 了\n现 实 扬 鞭，赶 着 我 向 前\n没有时间跟你分辨什么对与错\n\n[Bridge]\n没有什么对错，没有罪过\n谁不曾天真，是我太早看破\n生活一片狼藉，却又不想放弃\n一 边 聚 光 灯 下 绽 放，一 边 坠 落\n故作坚强，筑起心的墙\n越是委屈的伤口，越要藏\nLet it all out， it’s all right\n\n[Outro]\n俺 是 东 京 嘞，东 京 打 工 妹\n\n从虎之门带你转到浅草\n再从新宿转到竹桥\n\n俺 是 东 京 嘞，东 京 打 工 妹\n\n带 你 转 羽田 成田 蒲田 神田\n做 你 嘞 小 甜 甜！\n\n俺 是 东 京 嘞，东 京 打 工 妹\n带 你 转 赤 坂，带 你 转 霞 关\n恁 咋 不 早 说，今 天 不 管 饭\n",
+    "audio_duration": 147.62212,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.052134037017822266,
+        "diffusion": 17.909283876419067,
+        "latent2audio": 1.4904146194458008
+    },
+    "actual_seeds": [
+        2945962357
+    ],
+    "retake_seeds": [
+        2252292438
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0.7,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250513050200_0.wav"
+}

@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "ACE-Step/ACE-Step-v1-chinese-rap-LoRA",
+    "task": "text2music",
+    "prompt": "Rap, Chinese Rap, J-Pop, Anime, kawaii pop, EDM, Aggressive, Intense, Crisp Snare, Super Fast, Clear",
+    "lyrics": "(Intro)\nLet's drift away...\n\n(Verse 1)\n现实是灰色的格子间，重复的工作，枯燥的报表 \n敲打着键盘，眼神却放空，意识早已挣脱了肉体的镣铐\n飘向窗外，飞过拥挤的街道，穿过云层，到达想象的群岛\n那里色彩斑斓，形状奇异，逻辑失效，一切都随心所欲地飘摇\n迷幻的鼓点，像心跳的变奏，忽快忽慢，难以预料\n抽象的采样，扭曲的人声，构建一个超现实的音景环绕\n我变成一只鸟，一条鱼，一束光，自由地变换形态和奔跑\n在这白日梦里，我无所不能，摆脱了所有现实的烦恼， feeling the afterglow\n\n(Chorus)\n意识漫游，逃离乏味的轨道 \n迷幻嘻哈的节拍，是白日梦的引导 \n抽象的世界，逻辑被重新构造\nMind wandering free, where reality starts to fade slow\n\n(Verse 2)\n会议室里老板在讲话，声音模糊，像隔着水听不清道\n我的思绪，早已潜入深海，与发光的水母一起舞蹈\n或者飞向外太空，在星云间穿梭，探索未知的星球和轨道\n现实的规则，在这里被打破，物理定律也失去效劳\n白日梦是我的避难所，是精神的氧气罩\n在乏味的现实里，为我注入一点色彩和奇妙\n虽然短暂，虽然虚幻，但它让我能够喘息，重新把能量找到\n然后回到现实，继续扮演那个，循规蹈矩的角色，把梦藏好， keep the dream aglow\n\n(Chorus)\n意识漫游，逃离乏味的轨道\n迷幻嘻哈的节拍，是白日梦的引导\n抽象的世界，逻辑被重新构造\nMind wandering free, where reality starts to fade slow\n",
+    "audio_duration": 153.7148,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.04823446273803711,
+        "diffusion": 13.158645629882812,
+        "latent2audio": 1.493880033493042
+    },
+    "actual_seeds": [
+        2945962357
+    ],
+    "retake_seeds": [
+        2676242300
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0.7,
+    "guidance_scale_lyric": 1.5,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512171227_0.wav"
+}

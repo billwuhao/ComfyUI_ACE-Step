@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora",
+    "task": "text2music",
+    "prompt": "Rap, adult, male, spoken word, singing, bright, energetic, clear",
+    "lyrics": "[Intro]\n他们说我来自阴影里\n说我的肤色是原罪的印记\n\n[Verse]\n眼神像刀子刮过 穿透我的皮肤\n带着审判和偏见 让我无处可逃处\n你没听过我的故事 没走过我的路\n凭什么就下一个判决 把我划出你的版图\n你说我威胁到你 抢走了你的机会\n可你可知我付出的 是你不敢想象的血泪\n被贴上标签 被区别对待\n呼吸都是错的 只因我生来就不一样态\n\n[Chorus]\n看不见的墙 把我阻隔在外面\n听不见的声音 屏蔽了我的呼唤\n他们制造偏见 他们散播谎言\n只因为我的存在 让他们觉得不安\n\n[Verse]\n每一次努力争取 都会被审视被放大\n每一个细微的错误 都变成攻击的靶\n他们选择性失明 看不见我的汗水\n只看见他们想看的 带着恶意的定位\n系统性的歧视 像一张无形的网\n把我困在原地 无法自由地翱翔\n他们在享受特权 却指责我的贫困\n嘲笑我的口音 我的名字 我的出身\n\n[Chorus]\n看不见的墙 把我阻隔在外面\n听不见的声音 屏蔽了我的呼唤\n他们制造偏见 他们散播谎言\n只因为我的存在 让他们觉得不安\n\n[Bridge]\n我不想寻求同情 只想被公平对待\n不想被定义被束缚 有选择自己未来的权利\n什么时候 才能放下心中的成见\n看到真正的我 而不是你脑海里的画面\n\n[Outro]\n画面... 不安...\n偏见... 歧视...\n什么时候能停止...",
+    "audio_duration": 134.64,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.3,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.032018184661865234,
+        "diffusion": 13.275121927261353,
+        "latent2audio": 1.291429042816162
+    },
+    "actual_seeds": [
+        3826585269
+    ],
+    "retake_seeds": [
+        2907904223
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512101839_0.wav"
+}

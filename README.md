@@ -6,6 +6,19 @@ Fast, high-quality music generation, "repainting", remixing, editing, extending,
 
 ## 📣 Updates
 
+[2025-05-14]⚒️: 
+
+- Support Lora, [ACE-Step-v1-chinese-rap-LoRA](https://huggingface.co/ACE-Step/ACE-Step-v1-chinese-rap-LoRA) download and place it in the `models\TTS\ACE-Step-v1-3.5B\loras` directory.
+```
+        loras
+        └─ACE-Step-v1-chinese-rap-LoRA
+                config.json
+                pytorch_lora_weights.safetensors
+```
+- Add many delicious reference song parameters.
+
+![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-14_14-23-50.png)
+
 [2025-05-12]⚒️: Add model loader node, customizable model loading. Thank you for @[thezveroboy's](https://github.com/thezveroboy) contribution. Add `cpu_offload`, 8g of memory available, faster speed.
 
 ![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-12_09-37-42.png)
@@ -15,6 +28,10 @@ Fast, high-quality music generation, "repainting", remixing, editing, extending,
 [2025-05-07]⚒️: Released version v1.0.0.
 
 ## Usage
+
+- Lora:
+
+![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-14_14-10-23.png)
 
 Added a node for lyrics language conversion to provide multilingual support for the official [ComfyUI](https://docs.comfy.org/tutorials/audio/ace-step/ace-step-v1) ACE-Step workflow. Currently, ACE-Step supports 19 languages, but the following ten languages have better support:
 - English

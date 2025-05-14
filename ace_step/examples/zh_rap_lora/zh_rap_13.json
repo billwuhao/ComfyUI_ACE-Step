@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora",
+    "task": "text2music",
+    "prompt": "J-Pop, Anime, kawaii future bass, Femal vocals, EDM, Boombap, Aggressive, Intense, Crisp Snare, Super Fast, Rap",
+    "lyrics": "[Intro]\nYo, 这是来自深渊的怒吼\n\n[Verse]\n指尖飞快刷新，屏幕又亮起\n渴望那点赞，像致命的氧气\n精心修饰的脸庞，完美到诡异\n背后隐藏的疲惫，谁又会在意\n光鲜亮丽的橱窗，贩卖着焦虑\n每个人都在表演，戴着虚伪面具\n比较的游戏，让人逐渐窒息\n迷失在数据洪流，找不到自己\n\n[Chorus]\n这流量的时代，真假早已分不清\n盲目追随潮流，丢掉了初心\n为了那点虚荣，灵魂在沉沦\n看不见的锁链，捆绑每个灵魂\n\n[Verse]\n滤镜下的生活，美得不切实际\n营造虚假繁荣，掩盖内心空虚\n他人的光环下，显得自己多余\n嫉妒和自卑，交织成悲剧\n\n[Chorus]\n朋友圈里炫耀，现实中却叹气\n刷着别人的故事，忘记了呼吸\n算法推荐着你，想看的一切东西\n不知不觉间，你已不再是你\n他们说这是进步，我看是种病\n精神鸦片侵蚀，慢慢要了你的命\n\n[Bridge]\n屏幕亮了又暗，一天又过去\n究竟得到了什么，还是失去了自己\n那真实的连接，在何处寻觅\n困在这迷宫里，找不到出口的轨迹\n\n[Outro]\n我想挣脱，我想呼吸\n这虚拟的繁华，让我喘不过气\n谁能告诉我，这到底有什么意义\n一切都像泡沫，一触就破裂没余地",
+    "audio_duration": 119.44348,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.04764962196350098,
+        "diffusion": 10.94297981262207,
+        "latent2audio": 1.1815783977508545
+    },
+    "actual_seeds": [
+        3826585273
+    ],
+    "retake_seeds": [
+        2527594022
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512171809_0.wav"
+}

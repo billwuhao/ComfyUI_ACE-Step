@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora_100k",
+    "task": "text2music",
+    "prompt": "Orchestra, Symphony, Sonata, Opera, Concerto, Rap, Beat, DJ, MC, StreetCulture",
+    "lyrics": "[verse1]\n羊皮卷轴 墨香飘 莫扎特 熬 安魂曲 通宵  \n和弦齿轮 咔哒转 比 瑞士 手表 更 精密 律动  \n八轨磁带 玩叠叠乐 披头士 炸 录音棚 天花板  \nAI 卷起 新风暴 像 灭霸 打响指 般 简单  \n\n[chorus]\n琴弦 到 代码 进化论 狂飙（skr）  \n象牙塔 被 鼠标 点爆 像 泡泡（boom）  \n灵感 加 算法 等于 王炸 大招  \n人类 心跳 才是 终极 混音 调料  \n\n[verse2]\n春之祭 召唤 百人 乐团 才够 燥  \n合成器 极客 玩电焊 焊出 赛博 神庙  \nDAW 解放 双手 钢琴卷帘 变 乐高  \n音色库 开挂 像 吃 金币 的 马里奥  \n\nAI 拆解 爵士乐 黑话 像 庖丁 解牛  \nCityPop 复古 滤镜 直接 参数 调油  \n神经网络 偷师 贝多芬 半夜 翻墙头  \n音乐 基因库 被 改写成 超频 万花筒  \n\n[chorus]  \n琴弦 到 代码 进化论 狂飙（skr）  \n象牙塔 被 鼠标 点爆 像 泡泡（boom）  \n灵感 加 算法 等于 王炸 大招  \n人类 心跳 才是 终极 混音 调料  \n\n[verse3]  \n电子琴 被 吐槽 塑料 味 超标  \n卧室 制作人 用 鼠标 单挑 整个 乐团 编制  \nAI 伴奏 刚上线 就被 键盘侠 集火  \n却 忘了 电吉他 曾被 说 是 魔鬼 的 副歌  \n\n现在 我 指尖 蹦迪 在 数据 炼丹炉  \n提示词 召唤 莫扎特 跨次元 碰杯 珍珠奶茶  \n当 比特 海洋 淹没 所有 物理 琴柱  \n最后 的 音轨 永远 连着 心脏 的 跳针  \n\n[bridge]  \n鹅毛笔 蘸着 银河 当 墨汁（绝了）  \n音浪 在 元宇宙 开 分店（疯了）  \n技术 迷雾 散成 像素 烟花  \n而 我们 始终 带着 老派 的 心跳 混搭  \n\n[chorus]  \n琴弦 到 代码 进化论 狂飙（skr）  \n象牙塔 被 鼠标 点爆 像 泡泡（boom）  \n灵感 加 算法 等于 王炸 大招  \n人类 心跳 才是 终极 混音 调料  \n\n[outro]  \n从 蒸汽 到 硅基 浪潮 我 冲浪（yo）  \n用 脑洞 接住 每个 技术 暴击（叮）  \n当 所有 设备 没电 的 凌晨 三点钟  \n最 原始 的 旋律 在 胸腔 敲击 成 龙卷风  ",
+    "audio_duration": 172.64,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.65,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 3.648996353149414,
+        "diffusion": 16.44967818260193,
+        "latent2audio": 1.614703893661499
+    },
+    "actual_seeds": [
+        1198023141
+    ],
+    "retake_seeds": [
+        3389016134
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250513060150_0.wav"
+}

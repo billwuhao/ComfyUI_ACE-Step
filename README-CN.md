@@ -6,6 +6,18 @@
 
 ## 📣 更新
 
+[2025-05-14]⚒️: 
+- 支持 Lora, 将 [ACE-Step-v1-chinese-rap-LoRA](https://huggingface.co/ACE-Step/ACE-Step-v1-chinese-rap-LoRA) 下载放到 `models\TTS\ACE-Step-v1-3.5B\loras` 目录下.
+```
+        loras
+        └─ACE-Step-v1-chinese-rap-LoRA
+                config.json
+                pytorch_lora_weights.safetensors
+```
+- 增加很多美味的参考歌曲参数.
+
+![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-14_14-23-50.png)
+
 [2025-05-12]⚒️: 增加模型加载节点, 可自定义模型加载. 感谢 @[thezveroboy](https://github.com/thezveroboy) 的贡献. 增加 `cpu_offload`, 8g 显存可用, 速度更快.
 
 ![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-12_09-37-42.png)
@@ -15,6 +27,10 @@
 [2025-05-07]⚒️: 发布版本 v1.0.0. 
 
 ## 使用
+
+- Lora:
+
+![](https://github.com/billwuhao/ComfyUI_ACE-Step/blob/main/images/2025-05-14_14-10-23.png)
 
 增加了多语言转换节点, 为 [ComfyUI](URL_ADDRESS.comfy.org/tutorials/audio/ace-step/ace-step-v1) 官方版 ACE-Step 工作流提供多语言支持. 目前，ACE Step 支持 19 种语言，但以下 10 种语言有更好的支持：
 - 英语：[en]

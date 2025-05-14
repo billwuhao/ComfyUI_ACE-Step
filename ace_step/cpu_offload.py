@@ -10,11 +10,13 @@ class CpuOffloader:
         self.original_dtype = model.dtype
     
     def __enter__(self):
-        self.model.to(self.original_device, dtype=self.original_dtype)
+        if not hasattr(self.model,"torchao_quantized"):
+            self.model.to(self.original_device, dtype=self.original_dtype)
         return self.model
     
     def __exit__(self, *args):
-        self.model.to("cpu")
+        if not hasattr(self.model,"torchao_quantized"):
+            self.model.to("cpu")
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
             torch.cuda.synchronize()

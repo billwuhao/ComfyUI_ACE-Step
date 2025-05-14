@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora_80k",
+    "task": "text2music",
+    "prompt": "Hip Hop, Hi-hat Rolls, spoken word, Melodic Flow, articulate, Female Rap, 120 BPM, clear, warm, female, melodic Rap, adult, super fast",
+    "lyrics": "[Verse 1]\n打南边来了个喇嘛，手里提拉着五斤鳎目，\n打北边来了个哑巴，腰里别着个喇叭。\n喇嘛想换哑巴的喇叭，哑巴摇头不说话，\n鳎目一甩像道闪电，喇叭一响震天涯！\n\n[Chorus]\n丁丁当当，乒乓乓乓，\n话赶话，舌绕梁，\n东边的钉，西边的墙，\n绕不完的弯，唱不完的慌！\n\n[Verse 2]\n墙上一根钉，钉下绳摇晃，\n绳吊着瓶，瓶碰碎了光。\n灯骂瓶，瓶怪绳，绳怨钉，\n稀里哗啦，一场荒唐！\n\n[Chorus]\n丁丁当当，乒乓乓乓，\n话赶话，舌绕梁，\n东边的钉，西边的墙，\n绕不完的弯，唱不完的慌！\n\n[Verse 3]\n板凳宽，扁担长，\n一个偏要绑，一个偏不让。\n青龙洞里龙翻身，\n千年大梦变稻香！\n\n[Bridge]\n麻婆婆的狗，咬破麻叉口，\n麻线穿针眼，补丁也风流。\n左一句，右一句，\n舌头打结心自由！\n\n[Chorus]\n丁丁当当，乒乓乓乓，\n话赶话，舌绕梁，\n东边的钉，西边的墙，\n绕不完的弯，唱不完的慌！",
+    "audio_duration": 214.12,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.031190156936645508,
+        "diffusion": 20.130417823791504,
+        "latent2audio": 1.9650826454162598
+    },
+    "actual_seeds": [
+        1946426111
+    ],
+    "retake_seeds": [
+        331383387
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512172941_0.wav"
+}

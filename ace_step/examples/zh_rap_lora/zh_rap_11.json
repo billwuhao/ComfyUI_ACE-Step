@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora_80k",
+    "task": "text2music",
+    "prompt": "四川话, spoken word, male, Tempo - Fast, Elements - Chorus Hook, Subgenre-Satirical Hip Hop, Rap, Chinese-language music, energetic, slightly nasal, Instrument - Live Bass Guitar, adult, Vocals - Syncopated Flow, Genre - Hip-Hop, rapping, bright",
+    "lyrics": "[chorus]\n黑 墨镜 金 链子 越 低调 越 霸气\n玩 街机 泡 吧里 再 野的 场子 都 不 怯气\n上海 滩 老 江湖 外滩 钟声 敲 胜负\n陆家嘴 黄浦江 财路 宽 给 你 开 扇窗\n\n[verse]\n老子 在 弄堂 斜起 走 想 拦路 的 先 报 名号\n我 早看透 你们 手抖 脚软\n只敢 网上 吠 现实 怂成 猫\n看 你们 混的 真 可怜 整天 蹲在 网吧 蹭 烟\n钱 赚不到 架 不敢打 还 学人 摆 大哥 脸\n\n[verse]\n叫 我 沪上 老 克勒 不是 拉菲 我 不 碰杯\n规矩 我 懒得 讲 太多 钞票 直接 拍 你 脸上 飞\n老子 耐心 差 门槛 高 你 找茬 等于 自 寻 烦恼\n要么 跪 要么 爬 最后 警告 只 说 一 遭\n\n[chorus]\n黑 墨镜 金 链子 越 低调 越 霸气\n玩 街机 泡 吧里 再 野的 场子 都 不 怯气\n上海 滩 老 江湖 外滩 钟声 敲 胜负\n陆家嘴 黄浦江 财路 宽 给 你 开 扇窗\n\n[verse]\n古巴 雪茄 在 指间 绕 代表 魔都 格调 必须 顶\nOG 在 你 够不到 的 高度 My bro 永远 在 顶层 盯\nCheck my vibe 不靠 大 金劳 留声机 放 周璇 和 白光\n爹妈 太 宠你 养出 巨婴 症 早晚 社会 教你 做人 经\n\n[verse]\n玩 说唱 小囡 太 年轻 要 比 flow 先去 练 气功\n廿年 磨 枪 才 亮 锋芒 我 三十六 招 收 你 入 瓮\n老子 存在 就是 打假 标\n多少 人 眼红 又 不敢 挑\n键盘 侠 的 狠话 像 棉花 糖\n见 真人 秒变 Hello Kitty 叫\n\n[chorus]\n黑 墨镜 金 链子 越 低调 越 霸气\n玩 街机 泡 吧里 再 野的 场子 都 不 怯气\n上海 滩 老 江湖 外滩 钟声 敲 胜负\n陆家嘴 黄浦江 财路 宽 给 你 开 扇窗\n\n[chorus]\n黑 墨镜 金 链子 越 低调 越 霸气\n玩 街机 泡 吧里 再 野的 场子 都 不 怯气\n上海 滩 老 江湖 外滩 钟声 敲 胜负\n陆家嘴 黄浦江 财路 宽 给 你 开 扇窗",
+    "audio_duration": 135.92,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.5,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.038518667221069336,
+        "diffusion": 16.47420620918274,
+        "latent2audio": 2.5094873905181885
+    },
+    "actual_seeds": [
+        2159904788
+    ],
+    "retake_seeds": [
+        2403013980
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250512164224_0.wav"
+}

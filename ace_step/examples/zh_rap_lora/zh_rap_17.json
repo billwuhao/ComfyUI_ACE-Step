@@ -1,0 +1,45 @@
+{
+    "lora_name_or_path": "/root/sag_train/data/ace_step_v1_chinese_rap_lora_100k",
+    "task": "text2music",
+    "prompt": "Rap, adult, male, spoken word, rapping, clear, warm, articulate, Lo-Fi Hip Hop, 100-120 BPM, Keyboard Chords, Male Rap, Lazy Rhythm, Melancholy, Rap",
+    "lyrics": "[Intro]\n夜色 很 淡 像 褪色 的 照片  \n但 记忆 却 像 刀锋 一样 锐利  \n\n[Verse 1]\n你 说过 的 甜言蜜语 现在 听来 像 最 恶毒 的 咒骂  \n你 刺进 我 心里 的 刀 现在 还 在 滴血 未 干 哪  \n慵懒 的 旋律 像 我 的 脚步 拖着 沉重 的 躯壳  \n脑海 里 循环 播放 那 画面 快 把 我 逼疯 了  \n键盘 和弦 低沉 又 忧伤 弹奏 着 我 的 绝望  \n我 曾经 的 信任 像 玻璃 一样 被 你 狠狠 地 摔 在 地上  \n不想 振作 不想 原谅 只 想 让 这 一切 都 停止  \n可 心底 有 个 声音 嘶吼 着 要 你 付出 该 有 的 代价  \n\n[Chorus]\n背叛 像 毒药 渗透 我 的 血液  \n复仇 的 火焰 在 我 眼中 燃起  \n哪怕 遍体鳞伤 哪怕 万劫不复  \n我 也 要 亲手 撕碎 你 的 幸福  \n这 是 我 的 哀歌 也 是 我 的 战书  \n键盘 的 音符 每 一下 都 带着 恨意 和 痛苦  \n\n[Verse 2]\n曾经 的 兄弟 现在 面目全非 像 个 陌生人  \n你 的 自私 像 癌细胞 一点点 吞噬 我 的 纯真  \n我 学着 你 的 样子 把 心 锁 起来 不再 轻易 相信  \n让 懒散 的 节奏 包裹 我 给 自己 一点 喘息  \n键盘 的 音色 变得 更加 阴冷 像 秋天 的 雨滴  \n冲刷 掉 所有 温情 只 剩下 彻骨 的 寒意  \n我 不会 大喊大叫 只是 默默 地 计划  \n每 一步 都 走向 让 你 后悔 的 那 一 刹那  \n\n[Chorus]\n背叛 像 毒药 渗透 我 的 血液  \n复仇 的 火焰 在 我 眼中 燃起  \n哪怕 遍体鳞伤 哪怕 万劫不复  \n我 也 要 亲手 撕碎 你 的 幸福  \n这 是 我 的 哀歌 也 是 我 的 战书  \n键盘 的 音符 每 一下 都 带着 恨意 和 痛苦  \n\n[Bridge]\n也许 复仇 不能 带来 平静  \n也许 只 会 让 我 更 堕落  \n但 如果 不 这样 做  \n我 连 活下去 的 勇气 都 没有  \n\n[Outro]\n复仇 复仇 复仇  \n直到 最后 一刻  \n懒散 地 复仇 着  ",
+    "audio_duration": 202.64,
+    "infer_step": 60,
+    "guidance_scale": 15,
+    "scheduler_type": "euler",
+    "cfg_type": "apg",
+    "omega_scale": 10,
+    "guidance_interval": 0.65,
+    "guidance_interval_decay": 0,
+    "min_guidance_scale": 3,
+    "use_erg_tag": true,
+    "use_erg_lyric": false,
+    "use_erg_diffusion": true,
+    "oss_steps": [],
+    "timecosts": {
+        "preprocess": 0.036400794982910156,
+        "diffusion": 23.055809259414673,
+        "latent2audio": 1.8787360191345215
+    },
+    "actual_seeds": [
+        3900061002
+    ],
+    "retake_seeds": [
+        3037373819
+    ],
+    "retake_variance": 0.5,
+    "guidance_scale_text": 0,
+    "guidance_scale_lyric": 0,
+    "repaint_start": 0,
+    "repaint_end": 0,
+    "edit_n_min": 0.0,
+    "edit_n_max": 1.0,
+    "edit_n_avg": 1,
+    "src_audio_path": null,
+    "edit_target_prompt": null,
+    "edit_target_lyrics": null,
+    "audio2audio_enable": false,
+    "ref_audio_strength": 0.5,
+    "ref_audio_input": null,
+    "audio_path": "./outputs/output_20250513055451_0.wav"
+}
