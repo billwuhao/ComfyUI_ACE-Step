@@ -110,7 +110,7 @@ class GenerationParameters:
     def INPUT_TYPES(s):
         return {"required": 
                     { "audio_duration": ("FLOAT", {"default": jd["audio_duration"], "min": 0.0, "max": 240.0, "step": 1.0, "tooltip": "0 is a random length"}),
-                      "infer_step": ("INT", {"default": jd["infer_step"], "min": 1, "max": 60, "step": 1}),
+                      "infer_step": ("INT", {"default": jd["infer_step"], "min": 1, "max": 200, "step": 1}),
                       "guidance_scale": ("FLOAT", {"default": jd["guidance_scale"], "min": 0.0, "max": 200.0, "step": 0.1, "tooltip": "When guidance_scale_lyric > 1 and guidance_scale_text > 1, the guidance scale will not be applied."}),
                       "scheduler_type": (["euler", "heun"], {"default": jd["scheduler_type"], "tooltip": "euler is recommended. heun will take more time."}),
                       "cfg_type": (["cfg", "apg", "cfg_star"], {"default": jd["cfg_type"], "tooltip": "apg is recommended. cfg and cfg_star are almost the same."}),
