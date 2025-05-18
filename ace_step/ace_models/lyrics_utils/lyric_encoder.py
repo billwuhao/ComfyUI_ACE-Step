@@ -3,16 +3,19 @@ import math
 import torch
 from torch import nn
 
+
 class ConvolutionModule(nn.Module):
     """ConvolutionModule in Conformer model."""
 
-    def __init__(self,
-                 channels: int,
-                 kernel_size: int = 15,
-                 activation: nn.Module = nn.ReLU(),
-                 norm: str = "batch_norm",
-                 causal: bool = False,
-                 bias: bool = True):
+    def __init__(
+        self,
+        channels: int,
+        kernel_size: int = 15,
+        activation: nn.Module = nn.ReLU(),
+        norm: str = "batch_norm",
+        causal: bool = False,
+        bias: bool = True,
+    ):
         """Construct an ConvolutionModule object.
         Args:
             channels (int): The number of channels of conv layers.
@@ -51,7 +54,7 @@ class ConvolutionModule(nn.Module):
             bias=bias,
         )
 
-        assert norm in ['batch_norm', 'layer_norm']
+        assert norm in ["batch_norm", "layer_norm"]
         if norm == "batch_norm":
             self.use_layer_norm = False
             self.norm = nn.BatchNorm1d(channels)
@@ -95,13 +98,13 @@ class ConvolutionModule(nn.Module):
 
         if self.lorder > 0:
             if cache.size(2) == 0:  # cache_t == 0
-                x = nn.functional.pad(x, (self.lorder, 0), 'constant', 0.0)
+                x = nn.functional.pad(x, (self.lorder, 0), "constant", 0.0)
             else:
                 assert cache.size(0) == x.size(0)  # equal batch
                 assert cache.size(1) == x.size(1)  # equal channel
                 x = torch.cat((cache, x), dim=2)
-            assert (x.size(2) > self.lorder)
-            new_cache = x[:, :, -self.lorder:]
+            assert x.size(2) > self.lorder
+            new_cache = x[:, :, -self.lorder :]
         else:
             # It's better we just return None if no cache is required,
             # However, for JIT export, here we just fake one tensor instead of
@@ -126,6 +129,7 @@ class ConvolutionModule(nn.Module):
 
         return x.transpose(1, 2), new_cache
 
+
 class PositionwiseFeedForward(torch.nn.Module):
     """Positionwise feed forward layer.
 
@@ -140,11 +144,11 @@ class PositionwiseFeedForward(torch.nn.Module):
     """
 
     def __init__(
-            self,
-            idim: int,
-            hidden_units: int,
-            dropout_rate: float,
-            activation: torch.nn.Module = torch.nn.ReLU(),
+        self,
+        idim: int,
+        hidden_units: int,
+        dropout_rate: float,
+        activation: torch.nn.Module = torch.nn.ReLU(),
     ):
         """Construct a PositionwiseFeedForward object."""
         super(PositionwiseFeedForward, self).__init__()
@@ -163,12 +167,14 @@ class PositionwiseFeedForward(torch.nn.Module):
         """
         return self.w_2(self.dropout(self.activation(self.w_1(xs))))
 
+
 class Swish(torch.nn.Module):
     """Construct an Swish object."""
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Return Swish activation function."""
         return x * torch.sigmoid(x)
+
 
 class MultiHeadedAttention(nn.Module):
     """Multi-Head Attention layer.
@@ -180,11 +186,9 @@ class MultiHeadedAttention(nn.Module):
 
     """
 
-    def __init__(self,
-                 n_head: int,
-                 n_feat: int,
-                 dropout_rate: float,
-                 key_bias: bool = True):
+    def __init__(
+        self, n_head: int, n_feat: int, dropout_rate: float, key_bias: bool = True
+    ):
         """Construct an MultiHeadedAttention object."""
         super().__init__()
         assert n_feat % n_head == 0
@@ -229,7 +233,7 @@ class MultiHeadedAttention(nn.Module):
         self,
         value: torch.Tensor,
         scores: torch.Tensor,
-        mask: torch.Tensor = torch.ones((0, 0, 0), dtype=torch.bool)
+        mask: torch.Tensor = torch.ones((0, 0, 0), dtype=torch.bool),
     ) -> torch.Tensor:
         """Compute attention context vector.
 
@@ -247,23 +251,24 @@ class MultiHeadedAttention(nn.Module):
 
         """
         n_batch = value.size(0)
-    
+
         if mask.size(2) > 0:  # time2 > 0
             mask = mask.unsqueeze(1).eq(0)  # (batch, 1, *, time2)
             # For last chunk, time2 might be larger than scores.size(-1)
-            mask = mask[:, :, :, :scores.size(-1)]  # (batch, 1, *, time2)
-            scores = scores.masked_fill(mask, -float('inf'))
+            mask = mask[:, :, :, : scores.size(-1)]  # (batch, 1, *, time2)
+            scores = scores.masked_fill(mask, -float("inf"))
             attn = torch.softmax(scores, dim=-1).masked_fill(
-                mask, 0.0)  # (batch, head, time1, time2)
+                mask, 0.0
+            )  # (batch, head, time1, time2)
 
         else:
             attn = torch.softmax(scores, dim=-1)  # (batch, head, time1, time2)
 
         p_attn = self.dropout(attn)
         x = torch.matmul(p_attn, value)  # (batch, head, time1, d_k)
-        x = (x.transpose(1, 2).contiguous().view(n_batch, -1,
-                                                 self.h * self.d_k)
-             )  # (batch, time1, d_model)
+        x = (
+            x.transpose(1, 2).contiguous().view(n_batch, -1, self.h * self.d_k)
+        )  # (batch, time1, d_model)
 
         return self.linear_out(x)  # (batch, time1, d_model)
 
@@ -274,7 +279,7 @@ class MultiHeadedAttention(nn.Module):
         value: torch.Tensor,
         mask: torch.Tensor = torch.ones((0, 0, 0), dtype=torch.bool),
         pos_emb: torch.Tensor = torch.empty(0),
-        cache: torch.Tensor = torch.zeros((0, 0, 0, 0))
+        cache: torch.Tensor = torch.zeros((0, 0, 0, 0)),
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Compute scaled dot product attention.
 
@@ -308,9 +313,7 @@ class MultiHeadedAttention(nn.Module):
         """
         q, k, v = self.forward_qkv(query, key, value)
         if cache.size(0) > 0:
-            key_cache, value_cache = torch.split(cache,
-                                                 cache.size(-1) // 2,
-                                                 dim=-1)
+            key_cache, value_cache = torch.split(cache, cache.size(-1) // 2, dim=-1)
             k = torch.cat([key_cache, k], dim=2)
             v = torch.cat([value_cache, v], dim=2)
         new_cache = torch.cat((k, v), dim=-1)
@@ -328,11 +331,9 @@ class RelPositionMultiHeadedAttention(MultiHeadedAttention):
         dropout_rate (float): Dropout rate.
     """
 
-    def __init__(self,
-                 n_head: int,
-                 n_feat: int,
-                 dropout_rate: float,
-                 key_bias: bool = True):
+    def __init__(
+        self, n_head: int, n_feat: int, dropout_rate: float, key_bias: bool = True
+    ):
         """Construct an RelPositionMultiHeadedAttention object."""
         super().__init__(n_head, n_feat, dropout_rate, key_bias)
         # linear transformation for positional encoding
@@ -355,14 +356,12 @@ class RelPositionMultiHeadedAttention(MultiHeadedAttention):
             torch.Tensor: Output tensor.
 
         """
-        zero_pad = torch.zeros((x.size()[0], x.size()[1], x.size()[2], 1),
-                               device=x.device,
-                               dtype=x.dtype)
+        zero_pad = torch.zeros(
+            (x.size()[0], x.size()[1], x.size()[2], 1), device=x.device, dtype=x.dtype
+        )
         x_padded = torch.cat([zero_pad, x], dim=-1)
 
-        x_padded = x_padded.view(x.size()[0],
-                                 x.size()[1],
-                                 x.size(3) + 1, x.size(2))
+        x_padded = x_padded.view(x.size()[0], x.size()[1], x.size(3) + 1, x.size(2))
         x = x_padded[:, :, 1:].view_as(x)[
             :, :, :, : x.size(-1) // 2 + 1
         ]  # only keep the positions from 0 to time2
@@ -375,7 +374,7 @@ class RelPositionMultiHeadedAttention(MultiHeadedAttention):
         value: torch.Tensor,
         mask: torch.Tensor = torch.ones((0, 0, 0), dtype=torch.bool),
         pos_emb: torch.Tensor = torch.empty(0),
-        cache: torch.Tensor = torch.zeros((0, 0, 0, 0))
+        cache: torch.Tensor = torch.zeros((0, 0, 0, 0)),
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Compute 'Scaled Dot Product Attention' with rel. positional encoding.
         Args:
@@ -399,9 +398,7 @@ class RelPositionMultiHeadedAttention(MultiHeadedAttention):
         q = q.transpose(1, 2)  # (batch, time1, head, d_k)
 
         if cache.size(0) > 0:
-            key_cache, value_cache = torch.split(cache,
-                                                 cache.size(-1) // 2,
-                                                 dim=-1)
+            key_cache, value_cache = torch.split(cache, cache.size(-1) // 2, dim=-1)
             k = torch.cat([key_cache, k], dim=2)
             v = torch.cat([value_cache, v], dim=2)
         # NOTE(xcsong): We do cache slicing in encoder.forward_chunk, since it's
@@ -431,15 +428,15 @@ class RelPositionMultiHeadedAttention(MultiHeadedAttention):
             matrix_bd = self.rel_shift(matrix_bd)
 
         scores = (matrix_ac + matrix_bd) / math.sqrt(
-            self.d_k)  # (batch, head, time1, time2)
+            self.d_k
+        )  # (batch, head, time1, time2)
 
         return self.forward_attention(v, scores, mask), new_cache
 
 
-
 def subsequent_mask(
-        size: int,
-        device: torch.device = torch.device("cpu"),
+    size: int,
+    device: torch.device = torch.device("cpu"),
 ) -> torch.Tensor:
     """Create mask for subsequent steps (size, size).
 
@@ -474,11 +471,11 @@ def subsequent_mask(
 
 
 def subsequent_chunk_mask(
-        size: int,
-        chunk_size: int,
-        num_left_chunks: int = -1,
-        device: torch.device = torch.device("cpu"),
-    ) -> torch.Tensor:
+    size: int,
+    chunk_size: int,
+    num_left_chunks: int = -1,
+    device: torch.device = torch.device("cpu"),
+) -> torch.Tensor:
     """Create mask for subsequent steps (size, size) with chunk size,
        this is for streaming encoder
 
@@ -510,15 +507,18 @@ def subsequent_chunk_mask(
         ret[i, start:ending] = True
     return ret
 
-def add_optional_chunk_mask(xs: torch.Tensor,
-                            masks: torch.Tensor,
-                            use_dynamic_chunk: bool,
-                            use_dynamic_left_chunk: bool,
-                            decoding_chunk_size: int,
-                            static_chunk_size: int,
-                            num_decoding_left_chunks: int,
-                            enable_full_context: bool = True):
-    """ Apply optional mask for encoder.
+
+def add_optional_chunk_mask(
+    xs: torch.Tensor,
+    masks: torch.Tensor,
+    use_dynamic_chunk: bool,
+    use_dynamic_left_chunk: bool,
+    decoding_chunk_size: int,
+    static_chunk_size: int,
+    num_decoding_left_chunks: int,
+    enable_full_context: bool = True,
+):
+    """Apply optional mask for encoder.
 
     Args:
         xs (torch.Tensor): padded input, (B, L, D), L for max length
@@ -557,7 +557,7 @@ def add_optional_chunk_mask(xs: torch.Tensor,
             # chunk size is either [1, 25] or full context(max_len).
             # Since we use 4 times subsampling and allow up to 1s(100 frames)
             # delay, the maximum frame is 100 / 4 = 25.
-            chunk_size = torch.randint(1, max_len, (1, )).item()
+            chunk_size = torch.randint(1, max_len, (1,)).item()
             num_left_chunks = -1
             if chunk_size > max_len // 2 and enable_full_context:
                 chunk_size = max_len
@@ -565,18 +565,17 @@ def add_optional_chunk_mask(xs: torch.Tensor,
                 chunk_size = chunk_size % 25 + 1
                 if use_dynamic_left_chunk:
                     max_left_chunks = (max_len - 1) // chunk_size
-                    num_left_chunks = torch.randint(0, max_left_chunks,
-                                                    (1, )).item()
-        chunk_masks = subsequent_chunk_mask(xs.size(1), chunk_size,
-                                            num_left_chunks,
-                                            xs.device)  # (L, L)
+                    num_left_chunks = torch.randint(0, max_left_chunks, (1,)).item()
+        chunk_masks = subsequent_chunk_mask(
+            xs.size(1), chunk_size, num_left_chunks, xs.device
+        )  # (L, L)
         chunk_masks = chunk_masks.unsqueeze(0)  # (1, L, L)
         chunk_masks = masks & chunk_masks  # (B, L, L)
     elif static_chunk_size > 0:
         num_left_chunks = num_decoding_left_chunks
-        chunk_masks = subsequent_chunk_mask(xs.size(1), static_chunk_size,
-                                            num_left_chunks,
-                                            xs.device)  # (L, L)
+        chunk_masks = subsequent_chunk_mask(
+            xs.size(1), static_chunk_size, num_left_chunks, xs.device
+        )  # (L, L)
         chunk_masks = chunk_masks.unsqueeze(0)  # (1, L, L)
         chunk_masks = masks & chunk_masks  # (B, L, L)
     else:
@@ -630,7 +629,8 @@ class ConformerEncoderLayer(nn.Module):
         if self.conv_module is not None:
             self.norm_conv = nn.LayerNorm(size, eps=1e-5)  # for the CNN module
             self.norm_final = nn.LayerNorm(
-                size, eps=1e-5)  # for the final output of the block
+                size, eps=1e-5
+            )  # for the final output of the block
         self.dropout = nn.Dropout(dropout_rate)
         self.size = size
         self.normalize_before = normalize_before
@@ -671,8 +671,7 @@ class ConformerEncoderLayer(nn.Module):
             residual = x
             if self.normalize_before:
                 x = self.norm_ff_macaron(x)
-            x = residual + self.ff_scale * self.dropout(
-                self.feed_forward_macaron(x))
+            x = residual + self.ff_scale * self.dropout(self.feed_forward_macaron(x))
             if not self.normalize_before:
                 x = self.norm_ff_macaron(x)
 
@@ -680,8 +679,7 @@ class ConformerEncoderLayer(nn.Module):
         residual = x
         if self.normalize_before:
             x = self.norm_mha(x)
-        x_att, new_att_cache = self.self_attn(x, x, x, mask, pos_emb,
-                                              att_cache)
+        x_att, new_att_cache = self.self_attn(x, x, x, mask, pos_emb, att_cache)
         x = residual + self.dropout(x_att)
         if not self.normalize_before:
             x = self.norm_mha(x)
@@ -712,7 +710,6 @@ class ConformerEncoderLayer(nn.Module):
             x = self.norm_final(x)
 
         return x, mask, new_att_cache, new_cnn_cache
-    
 
 
 class EspnetRelPositionalEncoding(torch.nn.Module):
@@ -770,8 +767,9 @@ class EspnetRelPositionalEncoding(torch.nn.Module):
         pe = torch.cat([pe_positive, pe_negative], dim=1)
         self.pe = pe.to(device=x.device, dtype=x.dtype)
 
-    def forward(self, x: torch.Tensor, offset: Union[int, torch.Tensor] = 0) \
-            -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(
+        self, x: torch.Tensor, offset: Union[int, torch.Tensor] = 0
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Add positional encoding.
 
         Args:
@@ -785,11 +783,11 @@ class EspnetRelPositionalEncoding(torch.nn.Module):
         x = x * self.xscale
         pos_emb = self.position_encoding(size=x.size(1), offset=offset)
         return self.dropout(x), self.dropout(pos_emb)
-    
-    def position_encoding(self,
-                          offset: Union[int, torch.Tensor],
-                          size: int) -> torch.Tensor:
-        """ For getting encoding in a streaming fashion
+
+    def position_encoding(
+        self, offset: Union[int, torch.Tensor], size: int
+    ) -> torch.Tensor:
+        """For getting encoding in a streaming fashion
 
         Attention!!!!!
         we apply dropout only once at the whole utterance level in a none
@@ -806,10 +804,9 @@ class EspnetRelPositionalEncoding(torch.nn.Module):
         """
         pos_emb = self.pe[
             :,
-            self.pe.size(1) // 2 - size + 1: self.pe.size(1) // 2 + size,
+            self.pe.size(1) // 2 - size + 1 : self.pe.size(1) // 2 + size,
         ]
         return pos_emb
-
 
 
 class LinearEmbed(torch.nn.Module):
@@ -822,8 +819,9 @@ class LinearEmbed(torch.nn.Module):
 
     """
 
-    def __init__(self, idim: int, odim: int, dropout_rate: float,
-                 pos_enc_class: torch.nn.Module):
+    def __init__(
+        self, idim: int, odim: int, dropout_rate: float, pos_enc_class: torch.nn.Module
+    ):
         """Construct an linear object."""
         super().__init__()
         self.out = torch.nn.Sequential(
@@ -831,16 +829,15 @@ class LinearEmbed(torch.nn.Module):
             torch.nn.LayerNorm(odim, eps=1e-5),
             torch.nn.Dropout(dropout_rate),
         )
-        self.pos_enc = pos_enc_class #rel_pos_espnet
-    
-    def position_encoding(self, offset: Union[int, torch.Tensor],
-                          size: int) -> torch.Tensor:
+        self.pos_enc = pos_enc_class  # rel_pos_espnet
+
+    def position_encoding(
+        self, offset: Union[int, torch.Tensor], size: int
+    ) -> torch.Tensor:
         return self.pos_enc.position_encoding(offset, size)
 
     def forward(
-        self,
-        x: torch.Tensor,
-        offset: Union[int, torch.Tensor] = 0
+        self, x: torch.Tensor, offset: Union[int, torch.Tensor] = 0
     ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         """Input x.
 
@@ -894,16 +891,14 @@ def make_pad_mask(lengths: torch.Tensor, max_len: int = 0) -> torch.Tensor:
     """
     batch_size = lengths.size(0)
     max_len = max_len if max_len > 0 else lengths.max().item()
-    seq_range = torch.arange(0,
-                             max_len,
-                             dtype=torch.int64,
-                             device=lengths.device)
+    seq_range = torch.arange(0, max_len, dtype=torch.int64, device=lengths.device)
     seq_range_expand = seq_range.unsqueeze(0).expand(batch_size, max_len)
     seq_length_expand = lengths.unsqueeze(-1)
     mask = seq_range_expand >= seq_length_expand
     return mask
 
-#https://github.com/FunAudioLLM/CosyVoice/blob/main/examples/magicdata-read/cosyvoice/conf/cosyvoice.yaml
+
+# https://github.com/FunAudioLLM/CosyVoice/blob/main/examples/magicdata-read/cosyvoice/conf/cosyvoice.yaml
 class ConformerEncoder(torch.nn.Module):
     """Conformer encoder module."""
 
@@ -917,14 +912,14 @@ class ConformerEncoder(torch.nn.Module):
         dropout_rate: float = 0.1,
         positional_dropout_rate: float = 0.1,
         attention_dropout_rate: float = 0.0,
-        input_layer: str = 'linear',
-        pos_enc_layer_type: str = 'rel_pos_espnet',
+        input_layer: str = "linear",
+        pos_enc_layer_type: str = "rel_pos_espnet",
         normalize_before: bool = True,
-        static_chunk_size: int = 1, # 1: causal_mask; 0: full_mask
+        static_chunk_size: int = 1,  # 1: causal_mask; 0: full_mask
         use_dynamic_chunk: bool = False,
         use_dynamic_left_chunk: bool = False,
         positionwise_conv_kernel_size: int = 1,
-        macaron_style: bool =False,
+        macaron_style: bool = False,
         selfattention_layer_type: str = "rel_selfattn",
         activation_type: str = "swish",
         use_cnn_module: bool = False,
@@ -953,13 +948,17 @@ class ConformerEncoder(torch.nn.Module):
         """
         super().__init__()
         self.output_size = output_size
-        self.embed = LinearEmbed(input_size, output_size, dropout_rate, 
-                                        EspnetRelPositionalEncoding(output_size, positional_dropout_rate))
+        self.embed = LinearEmbed(
+            input_size,
+            output_size,
+            dropout_rate,
+            EspnetRelPositionalEncoding(output_size, positional_dropout_rate),
+        )
         self.normalize_before = normalize_before
         self.after_norm = torch.nn.LayerNorm(output_size, eps=1e-5)
         self.gradient_checkpointing = gradient_checkpointing
         self.use_dynamic_chunk = use_dynamic_chunk
-        
+
         self.static_chunk_size = static_chunk_size
         self.use_dynamic_chunk = use_dynamic_chunk
         self.use_dynamic_left_chunk = use_dynamic_left_chunk
@@ -980,40 +979,60 @@ class ConformerEncoder(torch.nn.Module):
             activation,
         )
         # convolution module definition
-        convolution_layer_args = (output_size, cnn_module_kernel, activation,
-                                  cnn_module_norm, causal)
+        convolution_layer_args = (
+            output_size,
+            cnn_module_kernel,
+            activation,
+            cnn_module_norm,
+            causal,
+        )
 
-        self.encoders = torch.nn.ModuleList([
-            ConformerEncoderLayer(
-                output_size,
-                RelPositionMultiHeadedAttention(
-                    *encoder_selfattn_layer_args),
-                PositionwiseFeedForward(*positionwise_layer_args),
-                PositionwiseFeedForward(
-                    *positionwise_layer_args) if macaron_style else None,
-                ConvolutionModule(
-                    *convolution_layer_args) if use_cnn_module else None,
-                dropout_rate,
-                normalize_before,
-            ) for _ in range(num_blocks)
-        ])
-    
-    def forward_layers(self, xs: torch.Tensor, chunk_masks: torch.Tensor,
+        self.encoders = torch.nn.ModuleList(
+            [
+                ConformerEncoderLayer(
+                    output_size,
+                    RelPositionMultiHeadedAttention(*encoder_selfattn_layer_args),
+                    PositionwiseFeedForward(*positionwise_layer_args),
+                    (
+                        PositionwiseFeedForward(*positionwise_layer_args)
+                        if macaron_style
+                        else None
+                    ),
+                    (
+                        ConvolutionModule(*convolution_layer_args)
+                        if use_cnn_module
+                        else None
+                    ),
+                    dropout_rate,
+                    normalize_before,
+                )
+                for _ in range(num_blocks)
+            ]
+        )
+
+    def forward_layers(
+        self,
+        xs: torch.Tensor,
+        chunk_masks: torch.Tensor,
         pos_emb: torch.Tensor,
-        mask_pad: torch.Tensor) -> torch.Tensor:
+        mask_pad: torch.Tensor,
+    ) -> torch.Tensor:
         for layer in self.encoders:
             xs, chunk_masks, _, _ = layer(xs, chunk_masks, pos_emb, mask_pad)
         return xs
 
     @torch.jit.unused
-    def forward_layers_checkpointed(self, xs: torch.Tensor,
-                                    chunk_masks: torch.Tensor,
-                                    pos_emb: torch.Tensor,
-                                    mask_pad: torch.Tensor) -> torch.Tensor:
+    def forward_layers_checkpointed(
+        self,
+        xs: torch.Tensor,
+        chunk_masks: torch.Tensor,
+        pos_emb: torch.Tensor,
+        mask_pad: torch.Tensor,
+    ) -> torch.Tensor:
         for layer in self.encoders:
-            xs, chunk_masks, _, _ = ckpt.checkpoint(layer.__call__, xs,
-                                                    chunk_masks, pos_emb,
-                                                    mask_pad)
+            xs, chunk_masks, _, _ = torch.utils.checkpoint.checkpoint(
+                layer.__call__, xs, chunk_masks, pos_emb, mask_pad, use_reentrant=False
+            )
         return xs
 
     def forward(
@@ -1047,18 +1066,20 @@ class ConformerEncoder(torch.nn.Module):
             https://discuss.pytorch.org/t/any-different-between-model-input-and-model-forward-input/3690/2
         """
         T = xs.size(1)
-        masks = pad_mask.to(torch.bool).unsqueeze(1)  # (B, 1, T) 
+        masks = pad_mask.to(torch.bool).unsqueeze(1)  # (B, 1, T)
         xs, pos_emb = self.embed(xs)
         mask_pad = masks  # (B, 1, T/subsample_rate)
-        chunk_masks = add_optional_chunk_mask(xs, masks,
-                                              self.use_dynamic_chunk,
-                                              self.use_dynamic_left_chunk,
-                                              decoding_chunk_size,
-                                              self.static_chunk_size,
-                                              num_decoding_left_chunks) 
+        chunk_masks = add_optional_chunk_mask(
+            xs,
+            masks,
+            self.use_dynamic_chunk,
+            self.use_dynamic_left_chunk,
+            decoding_chunk_size,
+            self.static_chunk_size,
+            num_decoding_left_chunks,
+        )
         if self.gradient_checkpointing and self.training:
-            xs = self.forward_layers_checkpointed(xs, chunk_masks, pos_emb,
-                                                  mask_pad)
+            xs = self.forward_layers_checkpointed(xs, chunk_masks, pos_emb, mask_pad)
         else:
             xs = self.forward_layers(xs, chunk_masks, pos_emb, mask_pad)
         if self.normalize_before:
@@ -1067,4 +1088,3 @@ class ConformerEncoder(torch.nn.Module):
         # return the masks before encoder layers, and the masks will be used
         # for cross attention with decoder later
         return xs, masks
-

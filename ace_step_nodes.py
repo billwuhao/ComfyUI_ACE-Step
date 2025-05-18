@@ -112,7 +112,7 @@ class GenerationParameters:
                     { "audio_duration": ("FLOAT", {"default": jd["audio_duration"], "min": 0.0, "max": 240.0, "step": 1.0, "tooltip": "0 is a random length"}),
                       "infer_step": ("INT", {"default": jd["infer_step"], "min": 1, "max": 200, "step": 1}),
                       "guidance_scale": ("FLOAT", {"default": jd["guidance_scale"], "min": 0.0, "max": 200.0, "step": 0.1, "tooltip": "When guidance_scale_lyric > 1 and guidance_scale_text > 1, the guidance scale will not be applied."}),
-                      "scheduler_type": (["euler", "heun"], {"default": jd["scheduler_type"], "tooltip": "euler is recommended. heun will take more time."}),
+                      "scheduler_type": (["euler", "heun", "pingpong"], {"default": jd["scheduler_type"], "tooltip": "euler is recommended. heun will take more time."}),
                       "cfg_type": (["cfg", "apg", "cfg_star"], {"default": jd["cfg_type"], "tooltip": "apg is recommended. cfg and cfg_star are almost the same."}),
                       "omega_scale": ("FLOAT", {"default": jd["omega_scale"], "min": -100.0, "max": 100.0, "step": 0.1, "tooltip": "Higher values can reduce artifacts"}),
                       "seed": ("INT", {"default": jd["seed"], "min": 0, "max": 0xFFFFFFFFFFFFFFFF, "step": 1}),
@@ -357,6 +357,7 @@ class ACEStepGen:
                 },
             "optional": {
                 "prompt": ("STRING", {"forceInput": True}),
+                "negative_prompt": ("STRING", {"default": "", "multiline": True,}),
                 "lyrics": ("STRING", {"forceInput": True}),
                 "parameters": ("STRING", {"forceInput": True}),
                 "ref_audio": ("AUDIO",),
@@ -375,6 +376,7 @@ class ACEStepGen:
         models, 
         parameters: str="", 
         prompt: str="", 
+        negative_prompt: str="",
         lyrics: str="", 
         ref_audio=None, 
         ref_audio_strength=None, 
@@ -408,6 +410,7 @@ class ACEStepGen:
     
         audio_output = ap(
             prompt=prompt, 
+            negative_prompt=negative_prompt.strip(),
             lyrics=lyrics, 
             task="audio2audio", 
             audio2audio_enable=audio2audio_enable, 
@@ -433,6 +436,7 @@ class ACEStepRepainting:
                 "models": ("ACE_MODELS",),
                 "src_audio": ("AUDIO",),
                 "prompt": ("STRING", {"forceInput": True}),
+                "negative_prompt": ("STRING", {"multiline": True, "default": ""}),
                 "lyrics": ("STRING", {"forceInput": True}),
                 "parameters": ("STRING", {"forceInput": True}),
                 "repaint_start": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1}),
@@ -460,6 +464,7 @@ class ACEStepRepainting:
         repaint_variance, 
         seed, 
         # unload_model=True, 
+        negative_prompt: str="",
         overlapped_decode=False
         ):
         if seed != 0:
@@ -480,6 +485,7 @@ class ACEStepRepainting:
 
         audio_output = ap(
             prompt=prompt, 
+            negative_prompt=negative_prompt.strip(),
             lyrics=lyrics, 
             task="repaint", 
             retake_seeds=retake_seeds, 
@@ -581,6 +587,7 @@ class ACEStepExtend:
                 "models": ("ACE_MODELS",),
                 "src_audio": ("AUDIO",),
                 "prompt": ("STRING", {"forceInput": True}),
+                "negative_prompt": ("STRING", {"multiline": True, "default": ""}),
                 "lyrics": ("STRING", {"forceInput": True}),
                 "parameters": ("STRING", {"forceInput": True}),
                 "left_extend_length": ("INT", {"default": 0, "min": 0, "max": 1000, "step": 1}),
@@ -607,6 +614,7 @@ class ACEStepExtend:
         right_extend_length, 
         seed, 
         # unload_model=True, 
+        negative_prompt: str="",
         overlapped_decode=False
         ):
         if seed!= 0:
@@ -627,6 +635,7 @@ class ACEStepExtend:
 
         audio_output = ap(
             prompt=prompt, 
+            negative_prompt=negative_prompt.strip(),
             lyrics=lyrics, 
             task="extend", 
             retake_seeds=retake_seeds, 

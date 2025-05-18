@@ -12,6 +12,8 @@ from diffusers.utils.torch_utils import randn_tensor
 # from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from ace_step.schedulers.scheduling_flow_match_euler_discrete import FlowMatchEulerDiscreteScheduler
 from ace_step.schedulers.scheduling_flow_match_heun_discrete import FlowMatchHeunDiscreteScheduler
+from ace_step.schedulers.scheduling_flow_match_pingpong import FlowMatchPingPongScheduler
+
 from ace_step.language_segmentation import LangSegment
 from ace_step.ace_models.lyrics_utils.lyric_tokenizer import VoiceBpeTokenizer
 from ace_step.apg_guidance import apg_forward, MomentumBuffer, cfg_forward, cfg_zero_star, cfg_double_condition_forward
@@ -24,6 +26,7 @@ SUPPORT_LANGUAGES = {
     "ko": 6152, "hi": 6680
 }
 
+structure_pattern = re.compile(r"\[.*?\]")
 
 # class ACEStepPipeline(DiffusionPipeline):
 class ACEStepPipeline:
@@ -150,7 +153,9 @@ class ACEStepPipeline:
                     processed_input_seeds = list(map(int, manual_seeds.split(",")))
                 elif manual_seeds.isdigit():
                     processed_input_seeds = int(manual_seeds)
-            elif isinstance(manual_seeds, list) and all(isinstance(s, int) for s in manual_seeds):
+            elif isinstance(manual_seeds, list) and all(
+                isinstance(s, int) for s in manual_seeds
+            ):
                 if len(manual_seeds) > 0:
                     processed_input_seeds = list(manual_seeds)
             elif isinstance(manual_seeds, int):
@@ -171,7 +176,7 @@ class ACEStepPipeline:
                 else:
                     current_seed_for_generator = processed_input_seeds[-1]
             if current_seed_for_generator is None:
-                 current_seed_for_generator = torch.randint(0, 2**32, (1,)).item()
+                current_seed_for_generator = torch.randint(0, 2**32, (1,)).item()
             random_generators[i].manual_seed(current_seed_for_generator)
             actual_seeds.append(current_seed_for_generator)
         return random_generators, actual_seeds
@@ -206,7 +211,6 @@ class ACEStepPipeline:
             if "spa" in lang:
                 lang = "es"
 
-            structure_pattern = re.compile(r"\[.*?\]")
             try:
                 if structure_pattern.match(line):
                     token_idx = self.lyric_tokenizer.encode(line, "en")
@@ -336,6 +340,7 @@ class ACEStepPipeline:
         n_min=0,
         n_max=1.0,
         n_avg=1,
+        scheduler_type="euler",
     ):
 
         do_classifier_free_guidance = True
@@ -463,10 +468,18 @@ class ACEStepPipeline:
                         Vt_tar - Vt_src
                     )  # - (hfg-1)*( x_src))
 
-                # propagate direct ODE
                 zt_edit = zt_edit.to(torch.float32)
-                zt_edit = zt_edit + (t_im1 - t_i) * V_delta_avg
-                zt_edit = zt_edit.to(V_delta_avg.dtype)
+                if scheduler_type != "pingpong":
+                    # propagate direct ODE
+                    zt_edit = zt_edit.to(torch.float32)
+                    zt_edit = zt_edit + (t_im1 - t_i) * V_delta_avg
+                    zt_edit = zt_edit.to(V_delta_avg.dtype)
+                else:
+                    # propagate pingpong SDE
+                    zt_edit_denoised = zt_edit - t_i * V_delta_avg
+                    noise = torch.empty_like(zt_edit).normal_(generator=random_generators[0] if random_generators else None)
+                    prev_sample = (1 - t_im1) * zt_edit_denoised + t_im1 * noise
+
             else:  # i >= T_steps-n_min # regular sampling for last n_min steps
                 if i == n_max:
                     fwd_noise = randn_tensor(
@@ -504,9 +517,15 @@ class ACEStepPipeline:
 
                 dtype = Vt_tar.dtype
                 xt_tar = xt_tar.to(torch.float32)
-                prev_sample = xt_tar + (t_im1 - t_i) * Vt_tar
-                prev_sample = prev_sample.to(dtype)
-                xt_tar = prev_sample
+                if scheduler_type != "pingpong":
+                    prev_sample = xt_tar + (t_im1 - t_i) * Vt_tar
+                    prev_sample = prev_sample.to(dtype)
+                    xt_tar = prev_sample
+                else:
+                    prev_sample = xt_tar - t_i * Vt_tar
+                    noise = torch.empty_like(zt_edit).normal_(generator=random_generators[0] if random_generators else None)
+                    prev_sample = (1 - t_im1) * prev_sample + t_im1 * noise
+                    xt_tar = prev_sample
 
         target_latents = zt_edit if xt_tar is None else xt_tar
         return target_latents
@@ -514,23 +533,43 @@ class ACEStepPipeline:
     def add_latents_noise(
         self,
         gt_latents,
-        variance,
+        sigma_max,
         noise,
-        scheduler,
+        scheduler_type,
+        infer_steps,
     ):
 
         bsz = gt_latents.shape[0]
-        u = torch.tensor([variance] * bsz, dtype=gt_latents.dtype)
-        indices = (u * scheduler.config.num_train_timesteps).long()
-        timesteps = scheduler.timesteps.unsqueeze(1).to(gt_latents.dtype)
-        indices = indices.to(timesteps.device).to(gt_latents.dtype).unsqueeze(1)
-        nearest_idx = torch.argmin(torch.cdist(indices, timesteps), dim=1)
-        sigma = scheduler.sigmas[nearest_idx].flatten().to(gt_latents.device).to(gt_latents.dtype)
-        while len(sigma.shape) < gt_latents.ndim:
-            sigma = sigma.unsqueeze(-1)
-        noisy_image = sigma * noise + (1.0 - sigma) * gt_latents
-        init_timestep = indices[0]
-        return noisy_image, init_timestep
+        device = gt_latents.device
+        if scheduler_type == "euler":
+            scheduler = FlowMatchEulerDiscreteScheduler(
+                num_train_timesteps=1000,
+                shift=3.0,
+                sigma_max=sigma_max,
+            )
+        elif scheduler_type == "heun":
+            scheduler = FlowMatchHeunDiscreteScheduler(
+                num_train_timesteps=1000,
+                shift=3.0,
+                sigma_max=sigma_max,
+            )
+        elif scheduler_type == "pingpong":
+            scheduler = FlowMatchPingPongScheduler(
+                num_train_timesteps=1000,
+                shift=3.0,
+                sigma_max=sigma_max
+            )
+
+        infer_steps = int(sigma_max * infer_steps)
+        timesteps, num_inference_steps = retrieve_timesteps(
+            scheduler,
+            num_inference_steps=infer_steps,
+            device=device,
+            timesteps=None,
+        )
+        noisy_image = gt_latents * (1 - scheduler.sigma_max) + noise * scheduler.sigma_max
+        logger.info(f"{scheduler.sigma_min=} {scheduler.sigma_max=} {timesteps=} {num_inference_steps=}")
+        return noisy_image, timesteps, scheduler, num_inference_steps
 
     @cpu_offload("ace_step_transformer")
     @torch.no_grad()
@@ -555,6 +594,8 @@ class ACEStepPipeline:
         min_guidance_scale=3.0,
         oss_steps=[],
         encoder_text_hidden_states_null=None,
+        neg_encoder_text_hidden_states=None,  
+        neg_text_attention_mask=None,      
         use_erg_lyric=False,
         use_erg_diffusion=False,
         retake_random_generators=None,
@@ -606,6 +647,11 @@ class ACEStepPipeline:
             )
         elif scheduler_type == "heun":
             scheduler = FlowMatchHeunDiscreteScheduler(
+                num_train_timesteps=1000,
+                shift=3.0,
+            )
+        elif scheduler_type == "pingpong":
+            scheduler = FlowMatchPingPongScheduler(
                 num_train_timesteps=1000,
                 shift=3.0,
             )
@@ -775,9 +821,17 @@ class ACEStepPipeline:
                 zt_edit = x0.clone()
                 z0 = target_latents
 
-        init_timestep = 1000
         if audio2audio_enable and ref_latents is not None:
-            target_latents, init_timestep = self.add_latents_noise(gt_latents=ref_latents, variance=(1-ref_audio_strength), noise=target_latents, scheduler=scheduler)
+            logger.info(
+                f"audio2audio_enable: {audio2audio_enable}, ref_latents: {ref_latents.shape}"
+            )
+            target_latents, timesteps, scheduler, num_inference_steps = self.add_latents_noise(
+                gt_latents=ref_latents,
+                sigma_max=(1-ref_audio_strength),
+                noise=target_latents,
+                scheduler_type=scheduler_type,
+                infer_steps=infer_steps,
+            )
 
         attention_mask = torch.ones(bsz, frame_length, device=device, dtype=dtype)
 
@@ -838,14 +892,24 @@ class ACEStepPipeline:
                 },
             )
         else:
-            # P(null_speaker, null_text, null_lyric)
-            encoder_hidden_states_null, _ = self.ace_step_transformer.encode(
-                torch.zeros_like(encoder_text_hidden_states),
-                text_attention_mask,
-                torch.zeros_like(speaker_embds),
-                torch.zeros_like(lyric_token_ids),
-                lyric_mask,
-            )
+            # Using negative prompt for unconditional guidance
+            if neg_encoder_text_hidden_states is not None:
+                encoder_hidden_states_null, _ = self.ace_step_transformer.encode(
+                    neg_encoder_text_hidden_states,  # Already padded to match
+                    neg_text_attention_mask,         # Already padded to match
+                    torch.zeros_like(speaker_embds),
+                    torch.zeros_like(lyric_token_ids),
+                    lyric_mask,
+                )
+            else:
+                # Original approach with zeros
+                encoder_hidden_states_null, _ = self.ace_step_transformer.encode(
+                    torch.zeros_like(encoder_text_hidden_states),
+                    text_attention_mask,
+                    torch.zeros_like(speaker_embds),
+                    torch.zeros_like(lyric_token_ids),
+                    lyric_mask,
+                )
 
         encoder_hidden_states_no_lyric = None
         if do_double_condition_guidance:
@@ -900,8 +964,6 @@ class ACEStepPipeline:
             return sample
 
         for i, t in tqdm(enumerate(timesteps), total=num_inference_steps):
-            if t > init_timestep:
-                continue
 
             if is_repaint:
                 if i < n_min:
@@ -1049,6 +1111,7 @@ class ACEStepPipeline:
                     sample=target_latents,
                     return_dict=False,
                     omega=omega_scale,
+                    generator=random_generators[0],
                 )[0]
 
         if is_extend:
@@ -1093,6 +1156,7 @@ class ACEStepPipeline:
         self,
         audio_duration: float = 60.0,
         prompt: str = None,
+        negative_prompt: str = None,
         lyrics: str = None,
         infer_step: int = 60,
         guidance_scale: float = 15.0,
@@ -1146,6 +1210,40 @@ class ACEStepPipeline:
         encoder_text_hidden_states, text_attention_mask = self.get_text_embeddings(texts, self.device)
         encoder_text_hidden_states = encoder_text_hidden_states.repeat(batch_size, 1, 1)
         text_attention_mask = text_attention_mask.repeat(batch_size, 1)
+
+        if negative_prompt:
+            neg_texts = [negative_prompt]
+            neg_encoder_text_hidden_states, neg_text_attention_mask = self.get_text_embeddings(
+                neg_texts, self.device
+            )
+            neg_encoder_text_hidden_states = neg_encoder_text_hidden_states.repeat(batch_size, 1, 1)
+            neg_text_attention_mask = neg_text_attention_mask.repeat(batch_size, 1)
+            
+            # Determine which is longer and pad the shorter one
+            pos_seq_len = encoder_text_hidden_states.shape[1]
+            neg_seq_len = neg_encoder_text_hidden_states.shape[1]
+            
+            if pos_seq_len > neg_seq_len:
+                # Pad negative embeddings
+                pad_size = pos_seq_len - neg_seq_len
+                neg_encoder_text_hidden_states = torch.nn.functional.pad(
+                    neg_encoder_text_hidden_states, (0, 0, 0, pad_size), "constant", 0
+                )
+                neg_text_attention_mask = torch.nn.functional.pad(
+                    neg_text_attention_mask, (0, pad_size), "constant", 0
+                )
+            elif neg_seq_len > pos_seq_len:
+                # Pad positive embeddings
+                pad_size = neg_seq_len - pos_seq_len
+                encoder_text_hidden_states = torch.nn.functional.pad(
+                    encoder_text_hidden_states, (0, 0, 0, pad_size), "constant", 0
+                )
+                text_attention_mask = torch.nn.functional.pad(
+                    text_attention_mask, (0, pad_size), "constant", 0
+                )
+        else:
+            neg_encoder_text_hidden_states = None
+            neg_text_attention_mask = None
 
         encoder_text_hidden_states_null = None
         if use_erg_tag:
@@ -1215,7 +1313,7 @@ class ACEStepPipeline:
                 speaker_embds=speaker_embeds,
                 lyric_token_ids=lyric_token_idx,
                 lyric_mask=lyric_mask,
-                target_encoder_text_hidden_states=target_encoder_text_hidden_states,
+                target_encoder_text_hidden_states=target_encoder_text_hidden_states, 
                 target_text_attention_mask=target_text_attention_mask,
                 target_speaker_embeds=target_speaker_embeds,
                 target_lyric_token_ids=target_lyric_token_idx,
@@ -1247,6 +1345,8 @@ class ACEStepPipeline:
                 min_guidance_scale=min_guidance_scale,
                 oss_steps=oss_steps,
                 encoder_text_hidden_states_null=encoder_text_hidden_states_null,
+                neg_encoder_text_hidden_states=neg_encoder_text_hidden_states if negative_prompt else None,
+                neg_text_attention_mask=neg_text_attention_mask if negative_prompt else None,
                 use_erg_lyric=use_erg_lyric,
                 use_erg_diffusion=use_erg_diffusion,
                 retake_random_generators=retake_random_generators,

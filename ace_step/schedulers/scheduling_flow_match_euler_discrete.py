@@ -71,8 +71,11 @@ class FlowMatchEulerDiscreteScheduler(SchedulerMixin, ConfigMixin):
         max_shift: Optional[float] = 1.15,
         base_image_seq_len: Optional[int] = 256,
         max_image_seq_len: Optional[int] = 4096,
+        sigma_max: Optional[float] = 1.0,
     ):
-        timesteps = np.linspace(1, num_train_timesteps, num_train_timesteps, dtype=np.float32)[::-1].copy()
+        timesteps = np.linspace(
+            1.0, sigma_max*num_train_timesteps, num_train_timesteps, dtype=np.float32
+        )[::-1].copy()
         timesteps = torch.from_numpy(timesteps).to(dtype=torch.float32)
 
         sigmas = timesteps / num_train_timesteps
@@ -146,7 +149,9 @@ class FlowMatchEulerDiscreteScheduler(SchedulerMixin, ConfigMixin):
 
         # self.begin_index is None when scheduler is used for training, or pipeline does not implement set_begin_index
         if self.begin_index is None:
-            step_indices = [self.index_for_timestep(t, schedule_timesteps) for t in timestep]
+            step_indices = [
+                self.index_for_timestep(t, schedule_timesteps) for t in timestep
+            ]
         elif self.step_index is not None:
             # add_noise is called after first denoising step (for inpainting)
             step_indices = [self.step_index] * timestep.shape[0]
@@ -186,12 +191,16 @@ class FlowMatchEulerDiscreteScheduler(SchedulerMixin, ConfigMixin):
         """
 
         if self.config.use_dynamic_shifting and mu is None:
-            raise ValueError(" you have a pass a value for `mu` when `use_dynamic_shifting` is set to be `True`")
+            raise ValueError(
+                " you have a pass a value for `mu` when `use_dynamic_shifting` is set to be `True`"
+            )
 
         if sigmas is None:
             self.num_inference_steps = num_inference_steps
             timesteps = np.linspace(
-                self._sigma_to_t(self.sigma_max), self._sigma_to_t(self.sigma_min), num_inference_steps
+                self._sigma_to_t(self.sigma_max),
+                self._sigma_to_t(self.sigma_min),
+                num_inference_steps,
             )
 
             sigmas = timesteps / self.config.num_train_timesteps
@@ -243,7 +252,7 @@ class FlowMatchEulerDiscreteScheduler(SchedulerMixin, ConfigMixin):
         s_noise: float = 1.0,
         generator: Optional[torch.Generator] = None,
         return_dict: bool = True,
-        omega: Union[float, np.array] = 0.0
+        omega: Union[float, np.array] = 0.0,
     ) -> Union[FlowMatchEulerDiscreteSchedulerOutput, Tuple]:
         """
         Predict the sample from the previous timestep by reversing the SDE. This function propagates the diffusion
@@ -360,7 +369,7 @@ class FlowMatchEulerDiscreteScheduler(SchedulerMixin, ConfigMixin):
 
         # ## --
         # ## channel mean 2
-        # dx = (sigma_next - sigma) * model_output 
+        # dx = (sigma_next - sigma) * model_output
         # m = dx.mean(dim=(2, 3), keepdim=True)
         # # print(m.shape) # torch.Size([1, 16, 1, 1])
         # dx_ = (dx - m) * omega + m

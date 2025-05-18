@@ -66,8 +66,11 @@ class FlowMatchHeunDiscreteScheduler(SchedulerMixin, ConfigMixin):
         self,
         num_train_timesteps: int = 1000,
         shift: float = 1.0,
+        sigma_max: Optional[float] = 1.0,
     ):
-        timesteps = np.linspace(1, num_train_timesteps, num_train_timesteps, dtype=np.float32)[::-1].copy()
+        timesteps = np.linspace(
+            1.0, sigma_max*num_train_timesteps, num_train_timesteps, dtype=np.float32
+        )[::-1].copy()
         timesteps = torch.from_numpy(timesteps).to(dtype=torch.float32)
 
         sigmas = timesteps / num_train_timesteps
@@ -137,7 +140,9 @@ class FlowMatchHeunDiscreteScheduler(SchedulerMixin, ConfigMixin):
     def _sigma_to_t(self, sigma):
         return sigma * self.config.num_train_timesteps
 
-    def set_timesteps(self, num_inference_steps: int, device: Union[str, torch.device] = None):
+    def set_timesteps(
+        self, num_inference_steps: int, device: Union[str, torch.device] = None
+    ):
         """
         Sets the discrete timesteps used for the diffusion chain (to be run before inference).
 
@@ -150,7 +155,9 @@ class FlowMatchHeunDiscreteScheduler(SchedulerMixin, ConfigMixin):
         self.num_inference_steps = num_inference_steps
 
         timesteps = np.linspace(
-            self._sigma_to_t(self.sigma_max), self._sigma_to_t(self.sigma_min), num_inference_steps
+            self._sigma_to_t(self.sigma_max),
+            self._sigma_to_t(self.sigma_min),
+            num_inference_steps,
         )
 
         sigmas = timesteps / self.config.num_train_timesteps
@@ -162,7 +169,9 @@ class FlowMatchHeunDiscreteScheduler(SchedulerMixin, ConfigMixin):
         self.timesteps = timesteps.to(device=device)
 
         sigmas = torch.cat([sigmas, torch.zeros(1, device=sigmas.device)])
-        self.sigmas = torch.cat([sigmas[:1], sigmas[1:-1].repeat_interleave(2), sigmas[-1:]])
+        self.sigmas = torch.cat(
+            [sigmas[:1], sigmas[1:-1].repeat_interleave(2), sigmas[-1:]]
+        )
 
         # empty dt and derivative
         self.prev_derivative = None
@@ -208,7 +217,7 @@ class FlowMatchHeunDiscreteScheduler(SchedulerMixin, ConfigMixin):
         s_noise: float = 1.0,
         generator: Optional[torch.Generator] = None,
         return_dict: bool = True,
-        omega: Union[float, np.array] = 0.0
+        omega: Union[float, np.array] = 0.0,
     ) -> Union[FlowMatchHeunDiscreteSchedulerOutput, Tuple]:
         """
         Predict the sample from the previous timestep by reversing the SDE. This function propagates the diffusion
@@ -257,7 +266,7 @@ class FlowMatchHeunDiscreteScheduler(SchedulerMixin, ConfigMixin):
         self.omega_bef_rescale = omega
         omega = logistic_function(omega, k=0.1)
         self.omega_aft_rescale = omega
-        
+
         if (
             isinstance(timestep, int)
             or isinstance(timestep, torch.IntTensor)
@@ -285,13 +294,20 @@ class FlowMatchHeunDiscreteScheduler(SchedulerMixin, ConfigMixin):
             sigma = self.sigmas[self.step_index - 1]
             sigma_next = self.sigmas[self.step_index]
 
-        gamma = min(s_churn / (len(self.sigmas) - 1), 2**0.5 - 1) if s_tmin <= sigma <= s_tmax else 0.0
+        gamma = (
+            min(s_churn / (len(self.sigmas) - 1), 2**0.5 - 1)
+            if s_tmin <= sigma <= s_tmax
+            else 0.0
+        )
 
         sigma_hat = sigma * (gamma + 1)
 
         if gamma > 0:
             noise = randn_tensor(
-                model_output.shape, dtype=model_output.dtype, device=model_output.device, generator=generator
+                model_output.shape,
+                dtype=model_output.dtype,
+                device=model_output.device,
+                generator=generator,
             )
             eps = noise * s_noise
             sample = sample + eps * (sigma_hat**2 - sigma**2) ** 0.5

@@ -1,5 +1,4 @@
 import re
-from loguru import logger
 import os
 import sys
 
